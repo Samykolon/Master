@@ -4,3 +4,7 @@ own/
 speakers_short/
 test_data/
 train_data/
+emo_long/
+emo_sixseconds/
+zenodo_long/
+zenodo_sixseconds/

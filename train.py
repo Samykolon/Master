@@ -10,10 +10,9 @@ from tensorflow import keras
 from tensorflow.keras import utils
 from tensorflow.keras import layers
 
-
 NUMBER_MFCC = 13           # Number of MFCCs
-NUMBER_FRAMES = 299        # Numer of Frames
-NUMBER_TESTSAMPLES = 40    # Number of Testsamples
+NUMBER_FRAMES = 1493       # Numer of Frames
+NUMBER_TESTSAMPLES = 150    # Number of Testsamples
 BATCH_SIZE = 5             # Batch Size
 CLASSES = 7
 
@@ -35,7 +34,9 @@ WINDOW_STEP = 0.004
 # Preemph-Filter to reduce noise
 PREEMPH = 0.97
 
-os.chdir("/home/smu/Desktop/RNN/speakers_short")
+os.chdir("/home/smu/Desktop/RNN/emo_sixseconds")
+
+print("Generating features from emoDB ...")
 
 for aud in glob.glob("*.wav"):
     (rate,sig) = wav.read(aud)
@@ -56,8 +57,35 @@ for aud in glob.glob("*.wav"):
     featurefile = "../train_data/" + aud + "_" + emotion
     np.save(featurefile, mfcc_feat)
 
+os.chdir("/home/smu/Desktop/RNN/zenodo_sixseconds")
+
+print("Generating features from zenodo-database...")
+
+for aud in glob.glob("*.wav"):
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=2048)
+    emotion = "N"
+    if "W" in aud:
+        emotion = "W"
+    elif "L" in aud:
+        emotion = "L"
+    elif "E" in aud:
+        emotion = "E"
+    elif "A" in aud:
+        emotion = "A"
+    elif "F" in aud:
+        emotion = "F"
+    elif "T" in aud:
+        emotion = "T"
+    if len(mfcc_feat) == 1493:
+        featurefile = "../train_data/" + aud + "_" + emotion
+        np.save(featurefile, mfcc_feat)
+
+
 path = "/home/smu/Desktop/RNN/train_data/"
 moveto = "/home/smu/Desktop/RNN/test_data/"
+
+print("Chosing test samples...")
 
 for filename in os.listdir(moveto):
     file_path = os.path.join(moveto, filename)
@@ -81,10 +109,11 @@ ltr = []
 
 os.chdir("/home/smu/Desktop/RNN/train_data")
 
+print("Generating tensors for training...")
+
 for txtfile in glob.glob("*.npy"):
 
     temp = np.load(txtfile)
-    temp = np.delete(temp, (0), axis=0)
     data_train_data.append(temp)
 
 
@@ -132,11 +161,12 @@ ltt = []
 
 os.chdir("/home/smu/Desktop/RNN/test_data")
 
+print("Generating tensors for testing...")
+
 for txtfile in glob.glob("*.npy"):
 
 
     temp = np.load(txtfile)
-    temp = np.delete(temp, (0), axis=0)
     data_test_data.append(temp)
 
 
@@ -178,21 +208,32 @@ labeled_test_data = tf.data.Dataset.from_tensors((features_test, ltt))
 
 print(labeled_test_data)
 
+print("Generating model...")
+
 model = tf.keras.Sequential()
-model.add(layers.LSTM((100), input_shape=(299, 13), return_sequences=False))
-model.add(layers.Dropout(0.5))
+model.add(layers.LSTM((100), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.Dropout(0.2))
+model.add(layers.LSTM((100), input_shape=(1493, 13)))
+model.add(layers.Dropout(0.2))
 model.add(layers.Dense(100, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
-history = model.fit(features_train, ltr, epochs=60, batch_size=64, validation_data=(features_test, ltt))
+print("Training...")
+
+history = model.fit(features_train, ltr, epochs=25, batch_size=64, validation_data=(features_test, ltt))
+
+os.chdir("/home/smu/Desktop/RNN")
 
 model.save('models/rnn_1')
+
+print("Model trained and saved!")
 
 # Frequenzbereiche anpassen
 # Noise hinzufügen
 # Audio Schnipsel verlängern
 # Research LSTM Länge (5 sec?)
 
-# Eine Studie über Emotionserkennung mithilfe menschlicher Stimme mit Rekurrenten Neuronalen Netzen
+# Eine Studie über Emotionserkennung mithilfe menschlicher Stimme mit rekurrenten neuronalen Netzen
+# A study on emotion recognition using human voice with Recurrent Neural Networks

@@ -41,7 +41,7 @@ class DynamicUpdate():
     # By default, the FFT size is the first equal or superior power of 2 of the window size.
     # If we have a samplerate of 16000 Hz and a window size of 32 ms, we get 512 samples in each window.
     # The next superior power would be 512 so we choose that
-    NFFT = 512
+    NFFT = 2048
     # Format to read in audio data
     FORMAT = pyaudio.paInt16
     # Size of the Window
@@ -51,7 +51,7 @@ class DynamicUpdate():
     # Preemph-Filter to reduce noise
     PREEMPH = 0.97
     # Record Seconds
-    RECORD_SECONDS = 20
+    RECORD_SECONDS = 30
 
     def __init__(self, model, device):
         self.varw = 0.0
@@ -89,10 +89,11 @@ class DynamicUpdate():
         for i in range(0, int(self.SAMPLERATE / self.CHUNK * self.RECORD_SECONDS)):
             data = stream.read(self.CHUNK, exception_on_overflow = False)
             decoded = np.frombuffer(data, 'int16')
-            mfcc_feat = mfcc(decoded, samplerate=self.SAMPLERATE/3, winlen=self.WINDOW_SIZE, winstep=self.WINDOW_STEP, nfft=self.NFFT)
-            if len(frames) < 299:
+            mfcc_feat = mfcc(decoded, samplerate=self.SAMPLERATE, winlen=self.WINDOW_SIZE, winstep=self.WINDOW_STEP, nfft=self.NFFT)
+            if len(frames) < 1493:
                 frames.append(mfcc_feat)
-            elif len(frames) >= 299:
+            elif len(frames) >= 1493:
+                print(frames)
                 predict_test = tf.convert_to_tensor(frames)
                 predict_test = tf.transpose(predict_test, [1, 0, 2])
                 result = model.predict(predict_test)
