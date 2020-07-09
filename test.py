@@ -105,7 +105,7 @@ class DynamicUpdate():
         stream.close()
         p.terminate()
 
-    
+
 d = DynamicUpdate(model, chosen_device_index)
 d()
 

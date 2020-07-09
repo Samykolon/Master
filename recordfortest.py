@@ -5,10 +5,8 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 48000
 CHUNK = 1000
-RECORD_SECONDS = 120
-WAVE_OUTPUT_FILENAME = "/home/smu/Desktop/RNN/own/L2.wav"
-WAVE_OUTPUT_DOWN = "/home/smu/Desktop/RNN/own/F1_48000.wav"
-
+RECORD_SECONDS = 240
+WAVE_OUTPUT_FILENAME = "/home/smu/Desktop/RNN/own/TEST.wav"
 INPUT_DEVICE = "AT2020 USB: Audio (hw:1,0)" # Name of the input device
 
 # Lookup the index of the desired Input-Device, make sure jack is running
@@ -34,18 +32,19 @@ stream = audio.open(format=FORMAT, channels=CHANNELS,
 frames = []
 
 for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-    data = stream.read(CHUNK)
+    data = stream.read(CHUNK, exception_on_overflow = False)
     frames.append(data)
+    if len(frames) == (RATE / CHUNK * 6):
+        waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
+        waveFile.setnchannels(CHANNELS)
+        waveFile.setsampwidth(audio.get_sample_size(FORMAT))
+        waveFile.setframerate(RATE)
+        waveFile.writeframes(b''.join(frames))
+        waveFile.close()
+        frames = []
 
 print("Done Recording")
 
 stream.stop_stream()
 stream.close()
 audio.terminate()
-
-waveFile = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-waveFile.setnchannels(CHANNELS)
-waveFile.setsampwidth(audio.get_sample_size(FORMAT))
-waveFile.setframerate(RATE)
-waveFile.writeframes(b''.join(frames))
-waveFile.close()
