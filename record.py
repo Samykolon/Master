@@ -5,25 +5,25 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 48000
 CHUNK = 1000
-RECORD_SECONDS = 5
-WAVE_OUTPUT_FILENAME = "/home/smu/Desktop/RNN/own/freude.wav"
-WAVE_OUTPUT_DOWN = "/home/smu/Desktop/RNN/own/F1_16000.wav"
-WAVE_TEST = "/home/smu/Desktop/RNN/speakers_short/03a01Fa.wavshort.wav"
+RECORD_SECONDS = 120
+WAVE_OUTPUT_FILENAME = "/home/smu/Desktop/RNN/own/langeweile_1.wav"
+WAVE_OUTPUT_DOWN = "/home/smu/Desktop/RNN/own/F1_48000.wav"
 
-INPUT_DEVICE = "AT2020 USB: Audio (hw:2,0)" # Name of the input device
+INPUT_DEVICE = "AT2020 USB: Audio (hw:1,0)" # Name of the input device
 
 # Lookup the index of the desired Input-Device, make sure jack is running
 pa = pyaudio.PyAudio()
 chosen_device_index = -1
 for x in range(0,pa.get_device_count()):
     info = pa.get_device_info_by_index(x)
-    # print (pa.get_device_info_by_index(x))
+    print (pa.get_device_info_by_index(x))
     if info["name"] == INPUT_DEVICE:
         chosen_device_index = info["index"]
 
 print ("Chosen index: ", chosen_device_index)
 pa.terminate()
 
+print("Start Recording")
 
 audio = pyaudio.PyAudio()
 
@@ -36,6 +36,8 @@ frames = []
 for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
     data = stream.read(CHUNK)
     frames.append(data)
+
+print("Done Recording")
 
 stream.stop_stream()
 stream.close()

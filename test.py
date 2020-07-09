@@ -11,11 +11,11 @@ from python_speech_features import logfbank
 import scipy.io.wavfile as wav
 
 
-model = tf.keras.models.load_model('models/rnn_1')
+model = tf.keras.models.load_model('models/rnn_preemph0_own')
 model.summary()
 
 # Input-Device
-INPUT_DEVICE = "AT2020 USB: Audio (hw:2,0)" # Name of the input device
+INPUT_DEVICE = "AT2020 USB: Audio (hw:1,0)" # Name of the input device
 
 # Lookup the index of the desired Input-Device, make sure jack is running
 pa = pyaudio.PyAudio()
@@ -89,7 +89,7 @@ class DynamicUpdate():
         for i in range(0, int(self.SAMPLERATE / self.CHUNK * self.RECORD_SECONDS)):
             data = stream.read(self.CHUNK, exception_on_overflow = False)
             decoded = np.frombuffer(data, 'int16')
-            mfcc_feat = mfcc(decoded, samplerate=self.SAMPLERATE, winlen=self.WINDOW_SIZE, winstep=self.WINDOW_STEP, nfft=self.NFFT)
+            mfcc_feat = mfcc(decoded, samplerate=self.SAMPLERATE, winlen=self.WINDOW_SIZE, winstep=self.WINDOW_STEP, nfft=self.NFFT, preemph=0)
             if len(frames) < 1493:
                 frames.append(mfcc_feat)
             elif len(frames) >= 1493:
@@ -105,6 +105,7 @@ class DynamicUpdate():
         stream.close()
         p.terminate()
 
+    
 d = DynamicUpdate(model, chosen_device_index)
 d()
 
