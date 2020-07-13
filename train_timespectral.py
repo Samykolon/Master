@@ -35,7 +35,7 @@ PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
 #Path where the test-data is stored - gets randomly picked out of traindata
 PATH_TESTDATA = "/home/smu/Desktop/RNN/test_data/"
 
-os.chdir("/home/smu/Desktop/RNN/own_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 
 print("Generating features from own recordings ...")
 
@@ -60,7 +60,7 @@ for aud in glob.glob("*.wav"):
         featurefile = "../train_data/" + aud + "_" + emotion
         np.save(featurefile, mfcc_feat)
 
-os.chdir("/home/smu/Desktop/RNN/emo_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
 print("Generating features from emoDB ...")
 
@@ -83,7 +83,7 @@ for aud in glob.glob("*.wav"):
     featurefile = "../train_data/" + aud + "_" + emotion
     np.save(featurefile, mfcc_feat)
 
-os.chdir("/home/smu/Desktop/RNN/zenodo_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 
 print("Generating features from zenodo-database...")
 
