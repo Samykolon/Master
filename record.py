@@ -6,9 +6,7 @@ CHANNELS = 2
 RATE = 48000
 CHUNK = 1000
 RECORD_SECONDS = 120
-WAVE_OUTPUT_FILENAME = "/home/smu/Desktop/RNN/own/L2.wav"
-WAVE_OUTPUT_DOWN = "/home/smu/Desktop/RNN/own/F1_48000.wav"
-
+WAVE_OUTPUT_FILENAME = "/home/smu/Desktop/RNN/own/F3.wav"
 INPUT_DEVICE = "AT2020 USB: Audio (hw:1,0)" # Name of the input device
 
 # Lookup the index of the desired Input-Device, make sure jack is running

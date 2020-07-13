@@ -33,6 +33,7 @@ From the paper: Attentive Convolutional Neural Network based Speech Emotion Reco
 
 # Testen
 
+
 1. Macht es einen Unterschied, nur deutsche Aufnahmen, nur englische Aufnahmen oder gemischte Aufnahmen als Input zu verwenden?
 2. Welche Features werden genommen (momentan nur MFCCs) - lohnt es sich auch Features wie Time-Domain Features (zero crossing rate, energy, entropy of energy) und Spectral-Domain-Features (Spectral centroid, spectral spread, spectral entropy, spectral flux, spectral rollof) mit aufzunehmen?
 3. Was funktioniert besser - das Netzwerk mit vorherigem Preemph-Filter oder ohne aufzunehmen?
@@ -46,6 +47,7 @@ Testvorgänge:
 |----------------------|------------------|-------------------|---------------------------------------------|----------------------------------------------|
 | **Testdaten mit Noise**  |                  |                   |                                             |                                              |
 | **Testdaten ohne Noise** |                  |                   |                                             |                                              |
+| **Testdaten mit echter Noise** |                  |                   |                                             |                                              |
 
 2. Beste Ergebnisse nehmen und deutsch, englisch und gemischt gegeneinander Testen
 

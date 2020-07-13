@@ -174,6 +174,7 @@ features_train = tf.convert_to_tensor(data_train_data)
 labels_train = tf.convert_to_tensor(label_train_data)
 ltr = tf.convert_to_tensor(ltr)
 ltr = utils.to_categorical(ltr)
+print(ltr)
 
 labeled_train_data = tf.data.Dataset.from_tensors((features_train, ltr))
 
@@ -235,29 +236,27 @@ print(labeled_test_data)
 print("Generating model...")
 
 model = tf.keras.Sequential()
-model.add(layers.LSTM((100), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.LSTM((512), input_shape=(1493, 13), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((100), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.LSTM((512), input_shape=(1493, 13)))
 model.add(layers.Dropout(0.2))
-model.add(layers.LSTM((100), input_shape=(1493, 13)))
-model.add(layers.Dropout(0.2))
-model.add(layers.Dense(100, activation='relu'))
+model.add(layers.Dense(128, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
 print("Training...")
 
-history = model.fit(features_train, ltr, epochs=25, batch_size=64, validation_data=(features_test, ltt))
+log_dir = "logs/rnn_full_mfcc_preemph_nonoise"
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+history = model.fit(features_train, ltr, epochs=25, batch_size=512, validation_data=(features_test, ltt), callbacks=[tensorboard_callback])
 
 os.chdir("/home/smu/Desktop/RNN")
 
-model.save('models/rnn_full_3lstm')
+model.save('models/rnn_full_mfcc_preemph_nonoise')
 
 print("Model trained and saved!")
-
-# Frequenzbereiche anpassen
-# Noise hinzufügen
 
 # Eine Studie über Emotionserkennung mithilfe menschlicher Stimme mit rekurrenten neuronalen Netzen
 # A study on emotion recognition using human voice with Recurrent Neural Networks
