@@ -13,11 +13,7 @@ from tensorflow.keras import layers
 NUMBER_MFCC = 13           # Number of MFCCs
 NUMBER_FRAMES = 1493       # Numer of Frames
 NUMBER_TESTSAMPLES = 250   # Number of Testsamples
-BATCH_SIZE = 5             # Batch Size
-CLASSES = 7
-
-# Samplerate of the input
-SAMPLERATE = 16000
+SAMPLERATE = 16000         # Samplerate of the input
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -34,85 +30,88 @@ WINDOW_STEP = 0.004
 # Preemph-Filter to reduce noise
 PREEMPH = 0.97
 
-os.chdir("/home/smu/Desktop/RNN/own_sixseconds")
+# Path where the train-data is stored
+PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
+#Path where the test-data is stored - gets randomly picked out of traindata
+PATH_TESTDATA = "/home/smu/Desktop/RNN/test_data/"
 
-print("Generating features from own recordings...")
+# os.chdir("/home/smu/Desktop/RNN/own_sixseconds")
+#
+# print("Generating features from own recordings...")
+#
+# for aud in glob.glob("*.wav"):
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=0.064, winstep=0.008, nfft=4096)
+#
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     if len(mfcc_feat) == 1493:
+#         featurefile = "../train_data/" + aud + "_" + emotion
+#         np.save(featurefile, mfcc_feat)
+#
+# os.chdir("/home/smu/Desktop/RNN/emo_sixseconds")
+#
+# print("Generating features from emoDB ...")
+#
+# for aud in glob.glob("*.wav"):
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     featurefile = "../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, mfcc_feat)
+#
+# os.chdir("/home/smu/Desktop/RNN/zenodo_sixseconds")
+#
+# print("Generating features from zenodo-database...")
+#
+# for aud in glob.glob("*.wav"):
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=2048)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     if len(mfcc_feat) == 1493:
+#         featurefile = "../train_data/" + aud + "_" + emotion
+#         np.save(featurefile, mfcc_feat)
+#
 
-for aud in glob.glob("*.wav"):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=0.064, winstep=0.008, nfft=4096)
+print("Chosing test samples ...")
 
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    if len(mfcc_feat) == 1493:
-        featurefile = "../train_data/" + aud + "_" + emotion
-        np.save(featurefile, mfcc_feat)
-
-os.chdir("/home/smu/Desktop/RNN/emo_sixseconds")
-
-print("Generating features from emoDB ...")
-
-for aud in glob.glob("*.wav"):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    featurefile = "../train_data/" + aud + "_" + emotion
-    np.save(featurefile, mfcc_feat)
-
-os.chdir("/home/smu/Desktop/RNN/zenodo_sixseconds")
-
-print("Generating features from zenodo-database...")
-
-for aud in glob.glob("*.wav"):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=2048)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    if len(mfcc_feat) == 1493:
-        featurefile = "../train_data/" + aud + "_" + emotion
-        np.save(featurefile, mfcc_feat)
-
-path = "/home/smu/Desktop/RNN/train_data/"
-moveto = "/home/smu/Desktop/RNN/test_data/"
-
-print("Chosing test samples...")
-
-for filename in os.listdir(moveto):
-    file_path = os.path.join(moveto, filename)
+for filename in os.listdir(PATH_TESTDATA):
+    file_path = os.path.join(PATH_TESTDATA, filename)
     try:
         if os.path.isfile(file_path) or os.path.islink(file_path):
             os.unlink(file_path)
@@ -122,71 +121,59 @@ for filename in os.listdir(moveto):
         print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 for x in range(NUMBER_TESTSAMPLES):
-    random_file=random.choice(os.listdir("/home/smu/Desktop/RNN/train_data"))
-    src = path + random_file
-    dst = moveto + random_file
+    random_file=random.choice(os.listdir(PATH_TRAINDATA))
+    src = PATH_TRAINDATA + random_file
+    dst = PATH_TESTDATA + random_file
     shutil.move(src,dst)
 
+print("Initialising GPU ...")
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        print(e)
+
 data_train_data = []
-label_train_data = []
 ltr = []
+data_test_data = []
+ltt = []
 
-os.chdir("/home/smu/Desktop/RNN/train_data")
+os.chdir(PATH_TRAINDATA)
 
-print("Generating tensors for training...")
+print("Generating tensors for training ...")
 
 for txtfile in glob.glob("*.npy"):
 
     temp = np.load(txtfile)
     data_train_data.append(temp)
 
-
     if "W" in txtfile:
-        array = np.full(NUMBER_FRAMES, 0)
-        label_train_data.append(array)
         ltr.append(0)
     elif "L" in txtfile:
-        array = np.full(NUMBER_FRAMES, 1)
-        label_train_data.append(array)
         ltr.append(1)
     elif "E" in txtfile:
-        array = np.full(NUMBER_FRAMES, 2)
-        label_train_data.append(array)
         ltr.append(2)
     elif "A" in txtfile:
-        array = np.full(NUMBER_FRAMES, 3)
-        label_train_data.append(array)
         ltr.append(3)
     elif "F" in txtfile:
-        array = np.full(NUMBER_FRAMES, 4)
-        label_train_data.append(array)
         ltr.append(4)
     elif "T" in txtfile:
-        array = np.full(NUMBER_FRAMES, 5)
-        label_train_data.append(array)
         ltr.append(5)
     elif "N" in txtfile:
-        array = np.full(NUMBER_FRAMES, 6)
-        label_train_data.append(array)
         ltr.append(6)
 
 features_train = tf.convert_to_tensor(data_train_data)
-labels_train = tf.convert_to_tensor(label_train_data)
 ltr = tf.convert_to_tensor(ltr)
 ltr = utils.to_categorical(ltr)
-print(ltr)
 
-labeled_train_data = tf.data.Dataset.from_tensors((features_train, ltr))
+os.chdir(PATH_TESTDATA)
 
-print(labeled_train_data)
-
-data_test_data = []
-label_test_data = []
-ltt = []
-
-os.chdir("/home/smu/Desktop/RNN/test_data")
-
-print("Generating tensors for testing...")
+print("Generating tensors for testing ...")
 
 for txtfile in glob.glob("*.npy"):
 
@@ -194,67 +181,54 @@ for txtfile in glob.glob("*.npy"):
     temp = np.load(txtfile)
     data_test_data.append(temp)
 
-
     if "W" in txtfile:
-        array = np.full(NUMBER_FRAMES, 0)
-        label_test_data.append(array)
         ltt.append(0)
     elif "L" in txtfile:
-        array = np.full(NUMBER_FRAMES, 1)
-        label_test_data.append(array)
         ltt.append(1)
     elif "E" in txtfile:
-        array = np.full(NUMBER_FRAMES, 2)
-        label_test_data.append(array)
         ltt.append(2)
     elif "A" in txtfile:
-        array = np.full(NUMBER_FRAMES, 3)
-        label_test_data.append(array)
         ltt.append(3)
     elif "F" in txtfile:
-        array = np.full(NUMBER_FRAMES, 4)
-        label_test_data.append(array)
         ltt.append(4)
     elif "T" in txtfile:
-        array = np.full(NUMBER_FRAMES, 5)
-        label_test_data.append(array)
         ltt.append(5)
     elif "N" in txtfile:
-        array = np.full(NUMBER_FRAMES, 6)
-        label_test_data.append(array)
         ltt.append(6)
 
 features_test = tf.convert_to_tensor(data_test_data)
-labels_test = tf.convert_to_tensor(label_test_data)
 ltt = tf.convert_to_tensor(ltt)
 ltt = utils.to_categorical(ltt)
 
-labeled_test_data = tf.data.Dataset.from_tensors((features_test, ltt))
+print("Tensors generated, moving testfiles back ...")
 
-print(labeled_test_data)
+files = os.listdir(PATH_TESTDATA)
 
-print("Generating model...")
+for f in files:
+    shutil.copy2(PATH_TESTDATA + f, PATH_TRAINDATA)
+
+print("Generating model ...")
 
 model = tf.keras.Sequential()
-model.add(layers.LSTM((512), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((512), input_shape=(1493, 13)))
+model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.Dropout(0.4))
+model.add(layers.LSTM((128), input_shape=(1493, 13)))
 model.add(layers.Dropout(0.2))
 model.add(layers.Dense(128, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
-print("Training...")
-
-log_dir = "logs/rnn_full_mfcc_preemph_nonoise"
+print("Training ...")
+os.chdir("/home/smu/Desktop/RNN")
+log_dir = "logs/rnn_full_mfcc_preemph_nonoise_3lstm"
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
-history = model.fit(features_train, ltr, epochs=25, batch_size=512, validation_data=(features_test, ltt), callbacks=[tensorboard_callback])
+history = model.fit(features_train, ltr, epochs=25, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback])
 
-os.chdir("/home/smu/Desktop/RNN")
-
-model.save('models/rnn_full_mfcc_preemph_nonoise')
+model.save('models/rnn_full_mfcc_preemph_nonoise_3lstm')
 
 print("Model trained and saved!")
 
