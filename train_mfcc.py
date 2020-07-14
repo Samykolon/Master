@@ -57,6 +57,8 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "F"
     elif "T" in aud:
         emotion = "T"
+    featurefile = "../../train_data/" + aud + "_" + emotion
+    np.save(featurefile, mfcc_feat)
 
 os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
@@ -101,6 +103,8 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "F"
     elif "T" in aud:
         emotion = "T"
+    featurefile = "../../train_data/" + aud + "_" + emotion
+    np.save(featurefile, mfcc_feat)
 
 print("Chosing test samples ...")
 
