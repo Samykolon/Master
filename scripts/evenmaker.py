@@ -35,14 +35,14 @@ for aud in glob.glob("*.wav"):
     filepath = PATH_EMO_NEW + aud
     sound.export(filepath, format="wav")
 
-os.chdir(PATH_EMO_NEW)
-
-for aud in glob.glob("*.wav"):
-    ob = sf.SoundFile(aud)
-    print('Sample rate: {}'.format(ob.samplerate))
-    print('Channels: {}'.format(ob.channels))
-    print('Subtype: {}'.format(ob.subtype))
-    print('Frames: {}'.format(ob.frames))
+# os.chdir(PATH_EMO_NEW)
+#
+# for aud in glob.glob("*.wav"):
+#     ob = sf.SoundFile(aud)
+#     print('Sample rate: {}'.format(ob.samplerate))
+#     print('Channels: {}'.format(ob.channels))
+#     print('Subtype: {}'.format(ob.subtype))
+#     print('Frames: {}'.format(ob.frames))
 
 os.chdir(PATH_OWN)
 
@@ -54,14 +54,14 @@ for aud in glob.glob("*.wav"):
     filepath = PATH_OWN_NEW + aud
     sound.export(filepath, format="wav")
 
-os.chdir(PATH_OWN_NEW)
-
-for aud in glob.glob("*.wav"):
-    ob = sf.SoundFile(aud)
-    print('Sample rate: {}'.format(ob.samplerate))
-    print('Channels: {}'.format(ob.channels))
-    print('Subtype: {}'.format(ob.subtype))
-    print('Frames: {}'.format(ob.frames))
+# os.chdir(PATH_OWN_NEW)
+#
+# for aud in glob.glob("*.wav"):
+#     ob = sf.SoundFile(aud)
+#     print('Sample rate: {}'.format(ob.samplerate))
+#     print('Channels: {}'.format(ob.channels))
+#     print('Subtype: {}'.format(ob.subtype))
+#     print('Frames: {}'.format(ob.frames))
 
 os.chdir(PATH_ZENODO)
 
@@ -73,14 +73,14 @@ for aud in glob.glob("*.wav"):
     filepath = PATH_ZENODO_NEW + aud
     sound.export(filepath, format="wav")
 
-os.chdir(PATH_ZENODO_NEW)
-
-for aud in glob.glob("*.wav"):
-    ob = sf.SoundFile(aud)
-    print('Sample rate: {}'.format(ob.samplerate))
-    print('Channels: {}'.format(ob.channels))
-    print('Subtype: {}'.format(ob.subtype))
-    print('Frames: {}'.format(ob.frames))
+# os.chdir(PATH_ZENODO_NEW)
+#
+# for aud in glob.glob("*.wav"):
+#     ob = sf.SoundFile(aud)
+#     print('Sample rate: {}'.format(ob.samplerate))
+#     print('Channels: {}'.format(ob.channels))
+#     print('Subtype: {}'.format(ob.subtype))
+#     print('Frames: {}'.format(ob.frames))
 
 os.chdir(PATH_ENV)
 
@@ -102,11 +102,11 @@ for aud in glob.glob("*.wav"):
     filepath = PATH_ENV_NEW + aud
     sound.export(filepath, format="wav")
 
-os.chdir(PATH_ENV_NEW)
-
-for aud in glob.glob("*.wav"):
-    ob = sf.SoundFile(aud)
-    print('Sample rate: {}'.format(ob.samplerate))
-    print('Channels: {}'.format(ob.channels))
-    print('Subtype: {}'.format(ob.subtype))
-    print('Frames: {}'.format(ob.frames))
+# os.chdir(PATH_ENV_NEW)
+#
+# for aud in glob.glob("*.wav"):
+#     ob = sf.SoundFile(aud)
+#     print('Sample rate: {}'.format(ob.samplerate))
+#     print('Channels: {}'.format(ob.channels))
+#     print('Subtype: {}'.format(ob.subtype))
+#     print('Frames: {}'.format(ob.frames))

@@ -10,25 +10,26 @@ from tensorflow import keras
 from tensorflow.keras import utils
 from tensorflow.keras import layers
 
-NUMBER_MFCC = 13           # Number of MFCCs
-NUMBER_FRAMES = 1493       # Numer of Frames
+# Preemph-Filter to reduce noise
+PREEMPH = 0.97
+
+# Number of Testsamples
 NUMBER_TESTSAMPLES = 230   # Number of Testsamples
-SAMPLERATE = 16000         # Samplerate of the input
+
+# Name of the model (for saving and logs)
+MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_3lstm"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
 # If we have a samplerate of 16000 Hz and a window size of 32 ms, we get 512 samples in each window.
 # The next superior power would be 512 so we choose that
-NFFT = 512
+NFFT =2048
 
 # Size of the Window
 WINDOW_SIZE = 0.032
 
 # Window step Size = Window-Duration/8 - Overlapping Parameter
 WINDOW_STEP = 0.004
-
-# Preemph-Filter to reduce noise
-PREEMPH = 0.97
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -41,7 +42,7 @@ print("Generating features from own recordings ...")
 
 for aud in glob.glob("*.wav"):
     (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=0.064, winstep=0.008, nfft=4096, preemph=0)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -55,9 +56,6 @@ for aud in glob.glob("*.wav"):
         emotion = "F"
     elif "T" in aud:
         emotion = "T"
-    if len(mfcc_feat) == 1493:
-        featurefile = "../../train_data/" + aud + "_" + emotion
-        np.save(featurefile, mfcc_feat)
 
 os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
@@ -65,9 +63,7 @@ print("Generating features from emoDB ...")
 
 for aud in glob.glob("*.wav"):
     (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=512, preemph=0)
-    # index = [0, 1, 2, 3]
-    # mfcc_feat = np.delete(mfcc_feat, index, 0)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -90,7 +86,7 @@ print("Generating features from zenodo-database...")
 
 for aud in glob.glob("*.wav"):
     (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=2048, preemph=0)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -104,9 +100,6 @@ for aud in glob.glob("*.wav"):
         emotion = "F"
     elif "T" in aud:
         emotion = "T"
-    if len(mfcc_feat) == 1493:
-        featurefile = "../../train_data/" + aud + "_" + emotion
-        np.save(featurefile, mfcc_feat)
 
 print("Chosing test samples ...")
 
@@ -177,7 +170,6 @@ print("Generating tensors for testing ...")
 
 for txtfile in glob.glob("*.npy"):
 
-
     temp = np.load(txtfile)
     data_test_data.append(temp)
 
@@ -210,11 +202,11 @@ for f in files:
 print("Generating model ...")
 
 model = tf.keras.Sequential()
-model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.LSTM((512), input_shape=(1493, 13), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.LSTM((512), input_shape=(1493, 13), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((128), input_shape=(1493, 13)))
+model.add(layers.LSTM((512), input_shape=(1493, 13)))
 model.add(layers.Dropout(0.2))
 model.add(layers.Dense(128, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
@@ -223,12 +215,13 @@ model.summary()
 
 print("Training ...")
 os.chdir("/home/smu/Desktop/RNN")
-log_dir = "logs/rnn_full_mfcc_nopreemph_whitenoise_3lstm"
+log_dir = "logs/" + MODELNAME
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
 history = model.fit(features_train, ltr, epochs=25, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback])
 
-model.save('models/rnn_full_mfcc_nopreemph_whitenoise_3lstm')
+model_dir = 'models/' + MODELNAME
+model.save(model_dir)
 
 print("Model trained and saved!")
 
