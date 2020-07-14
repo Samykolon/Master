@@ -15,15 +15,18 @@ from tensorflow.keras import layers
 PREEMPH = 0.97
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 230   # Number of Testsamples
+NUMBER_TESTSAMPLES = 200   # Number of Testsamples
+
+# Number of validationsamples
+NUMBER_VALIDATION = 30
 
 # Name of the model (for saving and logs)
 MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_3lstm"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
-# If we have a samplerate of 16000 Hz and a window size of 32 ms, we get 512 samples in each window.
-# The next superior power would be 512 so we choose that
+# If we have a samplerate of 48000 Hz and a window size of 32 ms, we get 1536 samples in each window.
+# The next superior power would be 2048 so we choose that
 NFFT = 2048
 
 # Size of the Window
@@ -34,8 +37,10 @@ WINDOW_STEP = 0.004
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
-#Path where the test-data is stored - gets randomly picked out of traindata
+# Path where the test-data is stored - gets randomly picked out of traindata
 PATH_TESTDATA = "/home/smu/Desktop/RNN/test_data/"
+# Path for the validation_data for later testing
+PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 
 os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 
@@ -124,6 +129,21 @@ for x in range(NUMBER_TESTSAMPLES):
     dst = PATH_TESTDATA + random_file
     shutil.move(src,dst)
 
+print("Chosing validation samples ...")
+
+os.chdir(PATH_VALIDATIONDATA)
+
+try:
+    os.mkdir(MODELNAME)
+except Exception as e:
+    print('Failed to create model folder: %s' % (e))
+
+for x in range(NUMBER_VALIDATION):
+    random_file = random.choice(os.listdir(PATH_TRAINDATA))
+    src = PATH_TRAINDATA + random_file
+    dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+    shutil.move(src,dest)
+
 print("Initialising GPU ...")
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -204,14 +224,22 @@ files = os.listdir(PATH_TESTDATA)
 for f in files:
     shutil.copy2(PATH_TESTDATA + f, PATH_TRAINDATA)
 
+try:
+    filepath = PATH_VALIDATIONDATA + MODELNAME + "/"
+    files = os.listdir(filepath)
+    for f in files:
+        shutil.copy2(filepath + f, PATH_TRAINDATA)
+except Exception as e:
+    print(e)
+
 print("Generating model ...")
 
 model = tf.keras.Sequential()
-model.add(layers.LSTM((512), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((512), input_shape=(1493, 13), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((512), input_shape=(1493, 13)))
+model.add(layers.LSTM((128), input_shape=(1493, 13)))
 model.add(layers.Dropout(0.2))
 model.add(layers.Dense(128, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))

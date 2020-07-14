@@ -14,3 +14,4 @@ zenodo_database/
 logs/
 models/
 audiodata/
+validation_data/
