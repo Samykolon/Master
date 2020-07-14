@@ -1,6 +1,7 @@
 from python_speech_features import mfcc
 from python_speech_features import logfbank
 import scipy.io.wavfile as wav
+from tqdm import tqdm
 
 import glob, os, shutil, sys, random
 import numpy as np
@@ -23,7 +24,7 @@ MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_3lstm"
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
 # If we have a samplerate of 16000 Hz and a window size of 32 ms, we get 512 samples in each window.
 # The next superior power would be 512 so we choose that
-NFFT =2048
+NFFT = 2048
 
 # Size of the Window
 WINDOW_SIZE = 0.032
@@ -40,7 +41,7 @@ os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 
 print("Generating features from own recordings ...")
 
-for aud in glob.glob("*.wav"):
+for aud in tqdm(glob.glob("*.wav")):
     (rate,sig) = wav.read(aud)
     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
@@ -61,7 +62,7 @@ os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
 print("Generating features from emoDB ...")
 
-for aud in glob.glob("*.wav"):
+for aud in tqdm(glob.glob("*.wav")):
     (rate,sig) = wav.read(aud)
     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
@@ -84,7 +85,7 @@ os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 
 print("Generating features from zenodo-database...")
 
-for aud in glob.glob("*.wav"):
+for aud in tqdm(glob.glob("*.wav")):
     (rate,sig) = wav.read(aud)
     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
@@ -140,7 +141,7 @@ os.chdir(PATH_TRAINDATA)
 
 print("Generating tensors for training ...")
 
-for txtfile in glob.glob("*.npy"):
+for txtfile in tqdm(glob.glob("*.npy")):
 
     temp = np.load(txtfile)
     data_train_data.append(temp)
@@ -168,7 +169,7 @@ os.chdir(PATH_TESTDATA)
 
 print("Generating tensors for testing ...")
 
-for txtfile in glob.glob("*.npy"):
+for txtfile in tqdm(glob.glob("*.npy")):
 
     temp = np.load(txtfile)
     data_test_data.append(temp)
