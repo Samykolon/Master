@@ -1,5 +1,7 @@
 import timespectralfeatures
 from pyAudioAnalysis import audioBasicIO
+from python_speech_features import mfcc
+from python_speech_features import logfbank
 import scipy.io.wavfile as wav
 from tqdm import tqdm
 
@@ -11,20 +13,29 @@ from tensorflow import keras
 from tensorflow.keras import utils
 from tensorflow.keras import layers
 
+# Preemph-Filter to reduce noise
+PREEMPH = 0.0
+
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 400  # Number of Testsamples
+NUMBER_TESTSAMPLES = 200  # Number of Testsamples
 
 # Number of validationsamples
-NUMBER_VALIDATION = 60
+NUMBER_VALIDATION = 30
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_timespectrum_nopreemph_mixednoise_3lstm"
+MODELNAME = "rnn_full_21features_nopreemph_nonoise_3lstm"
 
 # Size of the Window
 WINDOW_SIZE = 0.032
 
 # Window step Size = Window-Duration/8 - Overlapping Parameter
 WINDOW_STEP = 0.004
+
+# NFFT - This is the frequency resolution
+# By default, the FFT size is the first equal or superior power of 2 of the window size.
+# If we have a samplerate of 48000 Hz and a window size of 32 ms, we get 1536 samples in each window.
+# The next superior power would be 2048 so we choose that
+NFFT = 2048
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -33,13 +44,15 @@ PATH_TESTDATA = "/home/smu/Desktop/RNN/test_data/"
 # Path for the validation_data for later testing
 PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
+os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 
 print("Generating features from own recordings ...")
 
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -53,16 +66,20 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "F"
     elif "T" in aud:
         emotion = "T"
+    F = np.swapaxes(F, 0, 1)
+    F = np.append(F, mfcc_feat, axis=1)
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
+os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
 print("Generating features from emoDB ...")
 
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -76,16 +93,20 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "F"
     elif "T" in aud:
         emotion = "T"
+    F = np.swapaxes(F, 0, 1)
+    F = np.append(F, mfcc_feat, axis=1)
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
+os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 
 print("Generating features from zenodo-database...")
 
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -99,6 +120,8 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "F"
     elif "T" in aud:
         emotion = "T"
+    F = np.swapaxes(F, 0, 1)
+    F = np.append(F, mfcc_feat, axis=1)
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
@@ -158,7 +181,6 @@ print("Generating tensors for training ...")
 
 for txtfile in tqdm(glob.glob("*.npy")):
     temp = np.load(txtfile)
-    temp = np.swapaxes(temp,0,1)
     data_train_data.append(temp)
 
     if "W" in txtfile:
@@ -187,7 +209,6 @@ print("Generating tensors for testing ...")
 for txtfile in tqdm(glob.glob("*.npy")):
 
     temp = np.load(txtfile)
-    temp = np.swapaxes(temp,0,1)
     data_test_data.append(temp)
 
     if "W" in txtfile:
@@ -227,11 +248,11 @@ except Exception as e:
 print("Generating model ...")
 
 model = tf.keras.Sequential()
-model.add(layers.LSTM((128), input_shape=(1493, 8), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(1493, 21), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((128), input_shape=(1493, 8), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(1493, 21), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((128), input_shape=(1493, 8)))
+model.add(layers.LSTM((128), input_shape=(1493, 21)))
 model.add(layers.Dropout(0.2))
 model.add(layers.Dense(128, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))

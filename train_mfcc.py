@@ -130,7 +130,7 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "A"
     elif "F" in aud:
         emotion = "F"
-    elif "T" in aud:
+    elif "T" mixednoisein aud:
         emotion = "T"
     featurefile = "../../train_data/" + aud + "___" + emotion
     np.save(featurefile, mfcc_feat)
