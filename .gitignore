@@ -16,3 +16,4 @@ models/
 audiodata/
 validation_data/
 __pycache__/
+npy_data/
