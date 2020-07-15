@@ -15,13 +15,13 @@ from tensorflow.keras import layers
 PREEMPH = 0.97
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 200   # Number of Testsamples
+NUMBER_TESTSAMPLES = 400  # Number of Testsamples
 
 # Number of validationsamples
-NUMBER_VALIDATION = 30
+NUMBER_VALIDATION = 60
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_3lstm"
+MODELNAME = "rnn_full_mfcc_preemph_mixednoise_3lstm"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -65,6 +65,30 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, mfcc_feat)
 
+os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
+
+print("Generating features from own recordings with noise ...")
+
+for aud in tqdm(glob.glob("*.wav")):
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+    emotion = "N"
+    if "W" in aud:
+        emotion = "W"
+    elif "L" in aud:
+        emotion = "L"
+    elif "E" in aud:
+        emotion = "E"
+    elif "A" in aud:
+        emotion = "A"
+    elif "F" in aud:
+        emotion = "F"
+    elif "T" in aud:
+        emotion = "T"
+    featurefile = "../../train_data/" + aud + "___" + emotion
+    np.save(featurefile, mfcc_feat)
+
+
 os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
 print("Generating features from emoDB ...")
@@ -88,6 +112,29 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, mfcc_feat)
 
+os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
+
+print("Generating features from emoDB with noise ...")
+
+for aud in tqdm(glob.glob("*.wav")):
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+    emotion = "N"
+    if "W" in aud:
+        emotion = "W"
+    elif "L" in aud:
+        emotion = "L"
+    elif "E" in aud:
+        emotion = "E"
+    elif "A" in aud:
+        emotion = "A"
+    elif "F" in aud:
+        emotion = "F"
+    elif "T" in aud:
+        emotion = "T"
+    featurefile = "../../train_data/" + aud + "___" + emotion
+    np.save(featurefile, mfcc_feat)
+
 os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 
 print("Generating features from zenodo-database...")
@@ -109,6 +156,29 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     featurefile = "../../train_data/" + aud + "_" + emotion
+    np.save(featurefile, mfcc_feat)
+
+os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
+
+print("Generating features from zenodo-database with noise...")
+
+for aud in tqdm(glob.glob("*.wav")):
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+    emotion = "N"
+    if "W" in aud:
+        emotion = "W"
+    elif "L" in aud:
+        emotion = "L"
+    elif "E" in aud:
+        emotion = "E"
+    elif "A" in aud:
+        emotion = "A"
+    elif "F" in aud:
+        emotion = "F"
+    elif "T" in aud:
+        emotion = "T"
+    featurefile = "../../train_data/" + aud + "___" + emotion
     np.save(featurefile, mfcc_feat)
 
 print("Chosing test samples ...")

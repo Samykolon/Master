@@ -15,3 +15,4 @@ logs/
 models/
 audiodata/
 validation_data/
+__pycache__/
