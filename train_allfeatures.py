@@ -17,13 +17,13 @@ from tensorflow.keras import layers
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 200  # Number of Testsamples
+NUMBER_TESTSAMPLES = 200 # Number of Testsamples
 
 # Number of validationsamples
 NUMBER_VALIDATION = 30
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_21features_nopreemph_nonoise_3lstm"
+MODELNAME = "rnn_ger_21features_nopreemph_mixednoise_3lstm"
 
 # Size of the Window
 WINDOW_SIZE = 0.032
@@ -37,93 +37,93 @@ WINDOW_STEP = 0.004
 # The next superior power would be 2048 so we choose that
 NFFT = 2048
 
-# Path where the train-data is stored
+# Patownh where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
 # Path where the test-data is stored - gets randomly picked out of traindata
 PATH_TESTDATA = "/home/smu/Desktop/RNN/test_data/"
 # Path for the validation_data for later testing
 PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
-
-print("Generating features from own recordings ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    F = np.swapaxes(F, 0, 1)
-    F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, F)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
-
-print("Generating features from emoDB ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    F = np.swapaxes(F, 0, 1)
-    F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, F)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
-
-print("Generating features from zenodo-database...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    F = np.swapaxes(F, 0, 1)
-    F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, F)
+# os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
+#
+# print("Generating features from own recordings ...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     [Fs, x] = audioBasicIO.read_audio_file(aud)
+#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, F)
+#
+# os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
+#
+# print("Generating features from emoDB ...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     [Fs, x] = audioBasicIO.read_audio_file(aud)
+#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, F)
+#
+# os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
+#
+# print("Generating features from zenodo-database...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     [Fs, x] = audioBasicIO.read_audio_file(aud)
+#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, F)
 
 print("Chosing test samples ...")
 
