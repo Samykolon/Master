@@ -1,5 +1,6 @@
 import timespectralfeatures
 from pyAudioAnalysis import audioBasicIO
+from pyAudioAnalysis import ShortTermFeatures
 from python_speech_features import mfcc
 from python_speech_features import logfbank
 import scipy.io.wavfile as wav
@@ -24,7 +25,7 @@ NUMBER_TESTSAMPLES = 200 # Number of Testsamples
 NUMBER_VALIDATION = 30
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_ger_21features_nopreemph_nonoise_4lstm_nfft32768"
+MODELNAME = "rnn_full_34features_nopreemph_nonoise_4lstm_nfft32768_adam"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -51,9 +52,9 @@ PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 #
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
-#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     F, f_names = ShortTermFeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs, deltas=False)
+#     # (rate,sig) = wav.read(aud)
+#     # mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
 #     if "W" in aud:
 #         emotion = "W"
@@ -68,7 +69,7 @@ PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 #     elif "T" in aud:
 #         emotion = "T"
 #     F = np.swapaxes(F, 0, 1)
-#     F = np.append(F, mfcc_feat, axis=1)
+#     # F = np.append(F, mfcc_feat, axis=1)
 #     featurefile = "../../train_data/" + aud + "_" + emotion
 #     np.save(featurefile, F)
 #
@@ -78,9 +79,9 @@ PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 #
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
-#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     F, f_names = ShortTermFeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs, deltas=False)
+#     # (rate,sig) = wav.read(aud)
+#     # mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
 #     if "W" in aud:
 #         emotion = "W"
@@ -95,7 +96,7 @@ PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 #     elif "T" in aud:
 #         emotion = "T"
 #     F = np.swapaxes(F, 0, 1)
-#     F = np.append(F, mfcc_feat, axis=1)
+#     # F = np.append(F, mfcc_feat, axis=1)
 #     featurefile = "../../train_data/" + aud + "_" + emotion
 #     np.save(featurefile, F)
 #
@@ -105,9 +106,9 @@ PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 #
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
-#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     F, f_names = ShortTermFeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs, deltas=False)
+#     # (rate,sig) = wav.read(aud)
+#     # mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
 #     if "W" in aud:
 #         emotion = "W"
@@ -122,7 +123,7 @@ PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 #     elif "T" in aud:
 #         emotion = "T"
 #     F = np.swapaxes(F, 0, 1)
-#     F = np.append(F, mfcc_feat, axis=1)
+#     # F = np.append(F, mfcc_feat, axis=1)
 #     featurefile = "../../train_data/" + aud + "_" + emotion
 #     np.save(featurefile, F)
 
@@ -248,17 +249,34 @@ except Exception as e:
 
 print("Generating model ...")
 
+# model = tf.keras.Sequential()
+# model.add(layers.LSTM((128), input_shape=(113, 34), return_sequences=True))
+# model.add(layers.Dropout(0.6))
+# model.add(layers.LSTM((128), input_shape=(113, 34), return_sequences=True))
+# model.add(layers.Dropout(0.6))
+# model.add(layers.LSTM((128), input_shape=(113, 34), return_sequences=True))
+# model.add(layers.Dropout(0.4))
+# model.add(layers.LSTM((128), input_shape=(113, 34)))
+# model.add(layers.Dropout(0.2))
+# model.add(layers.Dense(128, activation='relu'))
+# model.add(layers.Dense(7, activation='softmax'))
+# model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+# model.summary()
+
 model = tf.keras.Sequential()
-model.add(layers.LSTM((128), input_shape=(113, 21), return_sequences=True))
-model.add(layers.Dropout(0.6))
-model.add(layers.LSTM((128), input_shape=(113, 21), return_sequences=True))
-model.add(layers.Dropout(0.6))
-model.add(layers.LSTM((128), input_shape=(113, 21), return_sequences=True))
-model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((128), input_shape=(113, 21)))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33), return_sequences=True))
+model.add(layers.LSTM((128), input_shape=(113, 33)))
 model.add(layers.Dropout(0.2))
-model.add(layers.Dense(128, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
+
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 

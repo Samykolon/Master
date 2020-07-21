@@ -12,28 +12,25 @@ from tensorflow.keras import utils
 from tensorflow.keras import layers
 
 # Preemph-Filter to reduce noise
-PREEMPH = 0.97
+PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 400  # Number of Testsamples
-
-# Number of validationsamples
-NUMBER_VALIDATION = 60
+NUMBER_TESTSAMPLES = 200  # Number of Testsamples
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_mfcc_preemph_mixednoise_3lstm"
+MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_lstm_nfft65536"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
 # If we have a samplerate of 48000 Hz and a window size of 32 ms, we get 1536 samples in each window.
 # The next superior power would be 2048 so we choose that
-NFFT = 2048
+NFFT = 65536
 
 # Size of the Window
-WINDOW_SIZE = 0.032
+WINDOW_SIZE = 0.8
 
 # Window step Size = Window-Duration/8 - Overlapping Parameter
-WINDOW_STEP = 0.004
+WINDOW_STEP = 0.1
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -41,145 +38,147 @@ PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
 PATH_TESTDATA = "/home/smu/Desktop/RNN/test_data/"
 # Path for the validation_data for later testing
 PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
+# Path for the temporal saved weights
+PATH_WEIGHTS = "/home/smu/Desktop/RNN/temp/"
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
-
-print("Generating features from own recordings ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, mfcc_feat)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
-
-print("Generating features from own recordings with noise ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    featurefile = "../../train_data/" + aud + "___" + emotion
-    np.save(featurefile, mfcc_feat)
-
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
-
-print("Generating features from emoDB ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, mfcc_feat)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
-
-print("Generating features from emoDB with noise ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" mixednoisein aud:
-        emotion = "T"
-    featurefile = "../../train_data/" + aud + "___" + emotion
-    np.save(featurefile, mfcc_feat)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
-
-print("Generating features from zenodo-database...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, mfcc_feat)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
-
-print("Generating features from zenodo-database with noise...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    featurefile = "../../train_data/" + aud + "___" + emotion
-    np.save(featurefile, mfcc_feat)
+# os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
+#
+# print("Generating features from own recordings ...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, mfcc_feat)
+#
+# # os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
+# #
+# # print("Generating features from own recordings with noise ...")
+# #
+# # for aud in tqdm(glob.glob("*.wav")):
+# #     (rate,sig) = wav.read(aud)
+# #     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+# #     emotion = "N"
+# #     if "W" in aud:
+# #         emotion = "W"
+# #     elif "L" in aud:
+# #         emotion = "L"
+# #     elif "E" in aud:
+# #         emotion = "E"
+# #     elif "A" in aud:
+# #         emotion = "A"
+# #     elif "F" in aud:
+# #         emotion = "F"
+# #     elif "T" in aud:
+# #         emotion = "T"
+# #     featurefile = "../../train_data/" + aud + "___" + emotion
+# #     np.save(featurefile, mfcc_feat)
+#
+#
+# os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
+#
+# print("Generating features from emoDB ...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, mfcc_feat)
+#
+# # os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
+# #
+# # print("Generating features from emoDB with noise ...")
+# #
+# # for aud in tqdm(glob.glob("*.wav")):
+# #     (rate,sig) = wav.read(aud)
+# #     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+# #     emotion = "N"
+# #     if "W" in aud:
+# #         emotion = "W"
+# #     elif "L" in aud:
+# #         emotion = "L"
+# #     elif "E" in aud:
+# #         emotion = "E"
+# #     elif "A" in aud:
+# #         emotion = "A"
+# #     elif "F" in aud:
+# #         emotion = "F"
+# #     elif "T" mixednoisein aud:
+# #         emotion = "T"
+# #     featurefile = "../../train_data/" + aud + "___" + emotion
+# #     np.save(featurefile, mfcc_feat)
+#
+# os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
+#
+# print("Generating features from zenodo-database...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, mfcc_feat)
+#
+# # os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
+# #
+# # print("Generating features from zenodo-database with noise...")
+# #
+# # for aud in tqdm(glob.glob("*.wav")):
+# #     (rate,sig) = wav.read(aud)
+# #     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+# #     emotion = "N"
+# #     if "W" in aud:
+# #         emotion = "W"
+# #     elif "L" in aud:
+# #         emotion = "L"
+# #     elif "E" in aud:
+# #         emotion = "E"
+# #     elif "A" in aud:
+# #         emotion = "A"
+# #     elif "F" in aud:
+# #         emotion = "F"
+# #     elif "T" in aud:
+# #         emotion = "T"
+# #     featurefile = "../../train_data/" + aud + "___" + emotion
+# #     np.save(featurefile, mfcc_feat)
 
 print("Chosing test samples ...")
 
@@ -199,7 +198,7 @@ for x in range(NUMBER_TESTSAMPLES):
     dst = PATH_TESTDATA + random_file
     shutil.move(src,dst)
 
-print("Chosing validation samples ...")
+print("Chosing two validation samples for each emotion ...")
 
 os.chdir(PATH_VALIDATIONDATA)
 
@@ -208,11 +207,68 @@ try:
 except Exception as e:
     print('Failed to create model folder: %s' % (e))
 
-for x in range(NUMBER_VALIDATION):
+c = 0
+while c != 2:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
-    src = PATH_TRAINDATA + random_file
-    dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
-    shutil.move(src,dest)
+    if "N" in random_file:
+        src = PATH_TRAINDATA + random_file
+        dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+        shutil.move(src,dest)
+        c += 1
+
+c = 0
+while c != 2:
+    random_file = random.choice(os.listdir(PATH_TRAINDATA))
+    if "W" in random_file:
+        src = PATH_TRAINDATA + random_file
+        dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+        shutil.move(src,dest)
+        c += 1
+
+c = 0
+while c != 2:
+    random_file = random.choice(os.listdir(PATH_TRAINDATA))
+    if "L" in random_file:
+        src = PATH_TRAINDATA + random_file
+        dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+        shutil.move(src,dest)
+        c += 1
+
+c = 0
+while c != 2:
+    random_file = random.choice(os.listdir(PATH_TRAINDATA))
+    if "E" in random_file:
+        src = PATH_TRAINDATA + random_file
+        dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+        shutil.move(src,dest)
+        c += 1
+
+c = 0
+while c != 2:
+    random_file = random.choice(os.listdir(PATH_TRAINDATA))
+    if "A" in random_file:
+        src = PATH_TRAINDATA + random_file
+        dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+        shutil.move(src,dest)
+        c += 1
+
+c = 0
+while c != 2:
+    random_file = random.choice(os.listdir(PATH_TRAINDATA))
+    if "F" in random_file:
+        src = PATH_TRAINDATA + random_file
+        dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+        shutil.move(src,dest)
+        c += 1
+
+c = 0
+while c != 2:
+    random_file = random.choice(os.listdir(PATH_TRAINDATA))
+    if "T" in random_file:
+        src = PATH_TRAINDATA + random_file
+        dest = PATH_VALIDATIONDATA + MODELNAME + "/" + random_file
+        shutil.move(src,dest)
+        c += 1
 
 print("Initialising GPU ...")
 
@@ -305,23 +361,50 @@ except Exception as e:
 print("Generating model ...")
 
 model = tf.keras.Sequential()
-model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
+# model.add(layers.LSTM((512), input_shape=(None, 13), return_sequences=True))
+# model.add(layers.Dropout(0.6))
+# model.add(layers.LSTM((512), input_shape=(None, 13), return_sequences=True))
+# model.add(layers.Dropout(0.5))
+# model.add(layers.LSTM((512), input_shape=(None, 13), return_sequences=True))
+# model.add(layers.Dropout(0.4))
+model.add(layers.LSTM((512), input_shape=(None, 13)))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((128), input_shape=(1493, 13), return_sequences=True))
-model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((128), input_shape=(1493, 13)))
-model.add(layers.Dropout(0.2))
-model.add(layers.Dense(128, activation='relu'))
+model.add(layers.Dense(512, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+rms = tf.keras.optimizers.RMSprop(learning_rate=0.001)
+
+model.compile(loss='categorical_crossentropy', optimizer=rms, metrics=['accuracy'])
 model.summary()
 
+print("Clearing weights folder ... ")
+
+for filename in os.listdir(PATH_WEIGHTS):
+    file_path = os.path.join(PATH_WEIGHTS, filename)
+    try:
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (file_path, e))
+
 print("Training ...")
+
 os.chdir("/home/smu/Desktop/RNN")
 log_dir = "logs/" + MODELNAME
+weights_dir = "temp/"
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=weights_dir,
+    save_weights_only=True,
+    monitor='val_accuracy',
+    mode='max',
+    save_best_only=True)
 
-history = model.fit(features_train, ltr, epochs=25, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback])
+model.fit(features_train, ltr, epochs=50, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback, model_checkpoint_callback])
+
+model.load_weights(weights_dir)
 
 model_dir = 'models/' + MODELNAME
 model.save(model_dir)
