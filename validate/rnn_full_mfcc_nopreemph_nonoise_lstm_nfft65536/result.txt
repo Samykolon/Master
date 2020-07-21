@@ -1,17 +1,18 @@
 0 = Wut, 1 = Langeweile, 2 = Ekel, 3 = Angst, 4 = Freude, 5 = Trauer, 6 = Neutral
+
               precision    recall  f1-score   support
 
-           0       1.00      1.00      1.00         2
-           1       0.40      1.00      0.57         2
-           2       0.00      0.00      0.00         2
-           3       0.50      0.50      0.50         2
-           4       1.00      1.00      1.00         2
-           5       1.00      0.50      0.67         2
-           6       0.50      0.50      0.50         2
+           0       1.00      0.50      0.67         2
+           1       0.50      0.50      0.50         2
+           2       1.00      1.00      1.00         2
+           3       1.00      0.50      0.67         2
+           4       0.50      1.00      0.67         2
+           5       1.00      1.00      1.00         2
+           6       1.00      1.00      1.00         2
 
-    accuracy                           0.64        14
-   macro avg       0.63      0.64      0.61        14
-weighted avg       0.63      0.64      0.61        14
+    accuracy                           0.79        14
+   macro avg       0.86      0.79      0.79        14
+weighted avg       0.86      0.79      0.79        14
 
 Language of the dataset: German + English
 Used Features: MFCC (13 Features)
@@ -21,4 +22,4 @@ Model: 1 x LSTM
 NFFT-Size: 65536
 Window-Size: 0.8
 Window-Step: 0.1
-Validation Accuracy: 64.29 %
+Validation Accuracy: 78.57 %

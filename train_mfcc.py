@@ -11,6 +11,11 @@ from tensorflow import keras
 from tensorflow.keras import utils
 from tensorflow.keras import layers
 
+import sklearn.metrics
+import matplotlib.pyplot as plt
+import itertools
+import io
+
 # Preemph-Filter to reduce noise
 PREEMPH = 0.0
 
@@ -40,7 +45,8 @@ PATH_TESTDATA = "/home/smu/Desktop/RNN/test_data/"
 PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 # Path for the temporal saved weights
 PATH_WEIGHTS = "/home/smu/Desktop/RNN/temp/"
-
+# class_names
+CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral']
 # os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 #
 # print("Generating features from own recordings ...")
@@ -358,6 +364,8 @@ try:
 except Exception as e:
     print(e)
 
+valacc = 0.0
+
 print("Generating model ...")
 
 model = tf.keras.Sequential()
@@ -393,6 +401,69 @@ print("Training ...")
 
 os.chdir("/home/smu/Desktop/RNN")
 log_dir = "logs/" + MODELNAME
+
+
+
+def plot_to_image(figure):
+  # Save the plot to a PNG in memory.
+  buf = io.BytesIO()
+  plt.savefig(buf, format='png')
+  # Closing the figure prevents it from being displayed directly inside
+  # the notebook.
+  plt.close(figure)
+  buf.seek(0)
+  # Convert PNG buffer to TF image
+  image = tf.image.decode_png(buf.getvalue(), channels=4)
+  # Add the batch dimension
+  image = tf.expand_dims(image, 0)
+  return image
+
+def plot_confusion_matrix(cm, class_names):
+  figure = plt.figure(figsize=(8, 8))
+  plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+  plt.title("Confusion matrix")
+  plt.colorbar()
+  tick_marks = np.arange(len(class_names))
+  plt.xticks(tick_marks, class_names, rotation=45)
+  plt.yticks(tick_marks, class_names)
+
+  # Normalize the confusion matrix.
+  cm = np.around(cm.astype('float') / cm.sum(axis=1)[:, np.newaxis], decimals=2)
+
+  # Use white text if squares are dark; otherwise black.
+  threshold = cm.max() / 2.
+  for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+    color = "white" if cm[i, j] > threshold else "black"
+    plt.text(j, i, cm[i, j], horizontalalignment="center", color=color)
+
+  plt.tight_layout()
+  plt.ylabel('True label')
+  plt.xlabel('Predicted label')
+  return figure
+
+file_writer_cm = tf.summary.create_file_writer(log_dir + '/cm')
+
+
+def log_confusion_matrix(epoch, logs):
+  global valacc
+  current = logs.get("val_accuracy")
+  if current > valacc:
+      valacc = current
+      # Use the model to predict the values from the validation dataset.
+      test_pred = np.argmax(model.predict(features_test), axis=-1)
+      test_real = np.argmax(ltt, axis=1)
+      # Calculate the confusion matrix.
+      cm = sklearn.metrics.confusion_matrix(test_real, test_pred)
+      # Log the confusion matrix as an image summary.
+      figure = plot_confusion_matrix(cm, class_names=CLASSNAMES)
+      cm_image = plot_to_image(figure)
+
+      # Log the confusion matrix as an image summary.
+      with file_writer_cm.as_default():
+          tf.summary.image("Confusion Matrix", cm_image, step=epoch)
+
+cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=log_confusion_matrix)
+
 weights_dir = "temp/"
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
@@ -402,7 +473,7 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     mode='max',
     save_best_only=True)
 
-model.fit(features_train, ltr, epochs=50, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback, model_checkpoint_callback])
+model.fit(features_train, ltr, epochs=50, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback, model_checkpoint_callback, cm_callback])
 
 model.load_weights(weights_dir)
 

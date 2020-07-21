@@ -8,6 +8,8 @@ from tensorflow import keras
 from tensorflow.keras import utils
 from tensorflow.keras import layers
 from sklearn.metrics import classification_report
+from collections import defaultdict, namedtuple
+from typing import List
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
