@@ -47,6 +47,7 @@ PATH_VALIDATIONDATA = "/home/smu/Desktop/RNN/validation_data/"
 PATH_WEIGHTS = "/home/smu/Desktop/RNN/temp/"
 # class_names
 CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral']
+
 # os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 #
 # print("Generating features from own recordings ...")
@@ -214,7 +215,7 @@ except Exception as e:
     print('Failed to create model folder: %s' % (e))
 
 c = 0
-while c != 2:
+while c != 4:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
     if "N" in random_file:
         src = PATH_TRAINDATA + random_file
@@ -223,7 +224,7 @@ while c != 2:
         c += 1
 
 c = 0
-while c != 2:
+while c != 4:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
     if "W" in random_file:
         src = PATH_TRAINDATA + random_file
@@ -232,7 +233,7 @@ while c != 2:
         c += 1
 
 c = 0
-while c != 2:
+while c != 4:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
     if "L" in random_file:
         src = PATH_TRAINDATA + random_file
@@ -241,7 +242,7 @@ while c != 2:
         c += 1
 
 c = 0
-while c != 2:
+while c != 4:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
     if "E" in random_file:
         src = PATH_TRAINDATA + random_file
@@ -250,7 +251,7 @@ while c != 2:
         c += 1
 
 c = 0
-while c != 2:
+while c != 4:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
     if "A" in random_file:
         src = PATH_TRAINDATA + random_file
@@ -259,7 +260,7 @@ while c != 2:
         c += 1
 
 c = 0
-while c != 2:
+while c != 4:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
     if "F" in random_file:
         src = PATH_TRAINDATA + random_file
@@ -268,7 +269,7 @@ while c != 2:
         c += 1
 
 c = 0
-while c != 2:
+while c != 4:
     random_file = random.choice(os.listdir(PATH_TRAINDATA))
     if "T" in random_file:
         src = PATH_TRAINDATA + random_file
@@ -369,12 +370,14 @@ valacc = 0.0
 print("Generating model ...")
 
 model = tf.keras.Sequential()
+
 # model.add(layers.LSTM((512), input_shape=(None, 13), return_sequences=True))
 # model.add(layers.Dropout(0.6))
 # model.add(layers.LSTM((512), input_shape=(None, 13), return_sequences=True))
 # model.add(layers.Dropout(0.5))
 # model.add(layers.LSTM((512), input_shape=(None, 13), return_sequences=True))
 # model.add(layers.Dropout(0.4))
+
 model.add(layers.LSTM((512), input_shape=(None, 13)))
 model.add(layers.Dropout(0.4))
 model.add(layers.Dense(512, activation='relu'))
@@ -401,8 +404,6 @@ print("Training ...")
 
 os.chdir("/home/smu/Desktop/RNN")
 log_dir = "logs/" + MODELNAME
-
-
 
 def plot_to_image(figure):
   # Save the plot to a PNG in memory.
@@ -436,13 +437,13 @@ def plot_confusion_matrix(cm, class_names):
     color = "white" if cm[i, j] > threshold else "black"
     plt.text(j, i, cm[i, j], horizontalalignment="center", color=color)
 
-  plt.tight_layout()
+
   plt.ylabel('True label')
   plt.xlabel('Predicted label')
+  plt.tight_layout()
   return figure
 
 file_writer_cm = tf.summary.create_file_writer(log_dir + '/cm')
-
 
 def log_confusion_matrix(epoch, logs):
   global valacc
