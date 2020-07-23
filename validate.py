@@ -142,6 +142,10 @@ for folder in list(subfolders):
         o_nfft = "8192"
         o_windowsize = "0.1"
         o_windowstep = "0.0125"
+    elif o_nfft == "nfft131072":
+        o_nfft = "131072"
+        o_windowsize = "1.6"
+        o_windowstep = "0.2"
 
     o_language = "Language of the dataset: " + o_language + "\n"
     o_features = "Used Features: " + o_features + "\n"
