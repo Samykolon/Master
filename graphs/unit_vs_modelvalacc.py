@@ -12,13 +12,13 @@ b=[]
 
 os.chdir("/home/smu/Desktop/RNN/graphs")
 
-with open('nfft_vs_valacc_1lstm.csv', 'r') as csvfile:
+with open('unit_vs_modelacc_1lstm.csv', 'r') as csvfile:
     plots= csv.reader(csvfile, delimiter=',')
     for row in plots:
         x.append(int(row[0]))
         y.append(float(row[1]))
 
-with open('nfft_vs_valacc_4lstm.csv', 'r') as csvfile:
+with open('unit_vs_modelacc_4lstm.csv', 'r') as csvfile:
     plots= csv.reader(csvfile, delimiter=',')
     for row in plots:
         a.append(int(row[0]))
@@ -33,9 +33,9 @@ line2, = plt.plot(n,b, marker='o', label="4xLSTM")
 plt.legend()
 plt.xticks(n,x)
 
-plt.title('NFFT-Size and Validation-Accuracy (50 epochs)')
+plt.title('Unit-Size and Validation-Accuracy (50 epochs)')
 
-plt.xlabel('NFFT-Size')
+plt.xlabel('Unit-Size')
 plt.ylabel('Validation-Accuracy')
 
 plt.show()

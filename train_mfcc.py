@@ -20,22 +20,25 @@ import io
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 200  # Number of Testsamples
+NUMBER_TESTSAMPLES = 200 # Number of Testsamples
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_4lstm_nfft131072"
+MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_4lstm_nfft65536_1024"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
 # If we have a samplerate of 48000 Hz and a window size of 32 ms, we get 1536 samples in each window.
 # The next superior power would be 2048 so we choose that
-NFFT = 131072
+NFFT = 65536
 
 # Size of the Window
-WINDOW_SIZE = 1.6
+WINDOW_SIZE = 0.8
 
 # Window step Size = Window-Duration/8 - Overlapping Parameter
-WINDOW_STEP = 0.2
+WINDOW_STEP = 0.1
+
+# Units for Training
+UNITS = 1024
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -140,7 +143,7 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 # #         emotion = "T"
 # #     featurefile = "../../train_data/" + aud + "___" + emotion
 # #     np.save(featurefile, mfcc_feat)
-#
+
 # os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 #
 # print("Generating features from zenodo-database...")
@@ -371,15 +374,15 @@ print("Generating model ...")
 
 model = tf.keras.Sequential()
 
-model.add(layers.LSTM((256), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
 model.add(layers.Dropout(0.6))
-model.add(layers.LSTM((256), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
 model.add(layers.Dropout(0.5))
-model.add(layers.LSTM((256), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
 model.add(layers.Dropout(0.4))
-model.add(layers.LSTM((256), input_shape=(None, 13)))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13)))
 model.add(layers.Dropout(0.4))
-model.add(layers.Dense(256, activation='relu'))
+model.add(layers.Dense(UNITS, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
 
 rms = tf.keras.optimizers.RMSprop(learning_rate=0.001)
