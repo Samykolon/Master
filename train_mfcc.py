@@ -10,6 +10,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import utils
 from tensorflow.keras import layers
+from tensorflow.keras.models import Model
 
 import sklearn.metrics
 import matplotlib.pyplot as plt
@@ -23,7 +24,7 @@ PREEMPH = 0.0
 NUMBER_TESTSAMPLES = 200 # Number of Testsamples
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_4lstm_nfft65536_1024"
+MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_merger_nfft65536_256_5"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -38,7 +39,7 @@ WINDOW_SIZE = 0.8
 WINDOW_STEP = 0.1
 
 # Units for Training
-UNITS = 1024
+UNITS = 256
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -372,14 +373,28 @@ valacc = 0.0
 
 print("Generating model ...")
 
+# input1 = layers.Input(shape=(None, 13))
+# lstm1 = layers.LSTM(256, return_sequences=True)(input1)
+# lstm2 = layers.LSTM(256, return_sequences=True)(lstm1)
+# lstm3 = layers.LSTM(256, return_sequences=True)(lstm2)
+# lstm4 = layers.LSTM(256, return_sequences=True)(lstm3)
+# lstm5 = layers.LSTM(256, return_sequences=True)(lstm4)
+# lstm6 = layers.LSTM(256, return_sequences=True)(lstm5)
+# lstm7 = layers.LSTM(256, return_sequences=True)(lstm6)
+# merge1 = layers.Concatenate(axis=2)([input1,lstm7])
+# lstm8 = layers.LSTM(256)(merge1)
+# dense1 = layers.Dense(256, activation='relu')(lstm8)
+# dense2 = layers.Dense(7, activation='softmax')(dense1)
+# model = Model(inputs=input1, outputs=dense2)
+
 model = tf.keras.Sequential()
 
 model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.Dropout(0.6))
 model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.Dropout(0.5))
 model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.Dropout(0.4))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
 model.add(layers.LSTM((UNITS), input_shape=(None, 13)))
 model.add(layers.Dropout(0.4))
 model.add(layers.Dense(UNITS, activation='relu'))
@@ -487,3 +502,5 @@ print("Model trained and saved!")
 
 # Eine Studie über Emotionserkennung mithilfe menschlicher Stimme mit rekurrenten neuronalen Netzen
 # A study on emotion recognition using human voice with Recurrent Neural Networks
+
+#10.1109/CVPR.2016.90 - Merge Layer
