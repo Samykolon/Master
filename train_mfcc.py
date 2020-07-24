@@ -388,9 +388,6 @@ print("Generating model ...")
 # model = Model(inputs=input1, outputs=dense2)
 
 model = tf.keras.Sequential()
-
-model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
 model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
 model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
 model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))

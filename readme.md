@@ -29,3 +29,21 @@ SIGNALLENGTH = 6 s
 
 From the paper: Attentive Convolutional Neural Network based Speech Emotion Recognition:
 A Study on the Impact of Input Features, Signal Length, and Acted Speech we can retrieve 6 s as an optimal Length
+
+# Stats for the models
+
+### Model-Structure
+
+After testing, we found out that a 5-LSTM produces the best results (average 72.3 % validation accuracy):
+
+```python
+model = tf.keras.Sequential()
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 13)))
+model.add(layers.Dropout(0.4))
+model.add(layers.Dense(UNITS, activation='relu'))
+model.add(layers.Dense(7, activation='softmax'))
+```
