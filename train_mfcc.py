@@ -24,19 +24,19 @@ PREEMPH = 0.0
 NUMBER_TESTSAMPLES = 200 # Number of Testsamples
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_merger_nfft65536_256_5"
+MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_5lstm_nfft131072_16_4"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
 # If we have a samplerate of 48000 Hz and a window size of 32 ms, we get 1536 samples in each window.
 # The next superior power would be 2048 so we choose that
-NFFT = 65536
+NFFT = 131072
 
 # Size of the Window
-WINDOW_SIZE = 0.8
+WINDOW_SIZE = 1.6
 
 # Window step Size = Window-Duration/8 - Overlapping Parameter
-WINDOW_STEP = 0.1
+WINDOW_STEP = 0.2
 
 # Units for Training
 UNITS = 256
@@ -144,7 +144,7 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 # #         emotion = "T"
 # #     featurefile = "../../train_data/" + aud + "___" + emotion
 # #     np.save(featurefile, mfcc_feat)
-
+#
 # os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 #
 # print("Generating features from zenodo-database...")
@@ -487,6 +487,9 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     monitor='val_accuracy',
     mode='max',
     save_best_only=True)
+
+from tensorflow.keras.utils import plot_model
+plot_model(model, to_file='model.png')
 
 model.fit(features_train, ltr, epochs=50, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback, model_checkpoint_callback, cm_callback])
 
