@@ -1,3 +1,6 @@
+# (C) Samuel Dressel 2020
+# Make all samples of the own recordings 6 seconds long
+
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 import os

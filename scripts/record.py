@@ -1,3 +1,9 @@
+# (C) Samuel Dressel 2020
+# Script to record audio from AudioInput (INPUT_DEVICE)
+# Lookup the correct name of the input-device by running this script and reading
+# the output of the device_list. Especially on linux-systems the channel will change
+# after restarting the system.
+
 import pyaudio
 import wave
 import os

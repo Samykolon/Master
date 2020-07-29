@@ -1,3 +1,6 @@
+# (C) Samuel Dressel 2020
+# This script will add a random "real" noise to every audio sample (overlay)
+
 from pydub import AudioSegment
 from pydub.utils import make_chunks
 import os
@@ -7,6 +10,7 @@ PATH_ENVNOISE = "/home/smu/Desktop/RNN/audiodata/envnoise_sixseconds/"
 PATH_OUTPUT = "/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise/"
 PATH_INPUT = "/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds"
 
+# Function to normalize set the overlay gain of the noise
 def set_to_target_level(sound, target_level):
     difference = target_level - sound.dBFS
     return sound.apply_gain(difference)

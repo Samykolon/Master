@@ -1,3 +1,6 @@
+# (C) Samuel Dressel 2020
+# Make all samples of the emoDB 6 seconds long
+
 import pyaudio
 import wave
 import os

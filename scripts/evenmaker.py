@@ -1,3 +1,8 @@
+# (C) Samuel Dressel
+# Script to make the channelnumber and the samplerate for all the different dataset
+# sources the same. This script also normalizes the gain of each sample.
+# The commented lines in the script are for controlling the parameters by printing them out
+# for each sample
 import wave
 import audioop
 import glob, shutil, sys, random, os

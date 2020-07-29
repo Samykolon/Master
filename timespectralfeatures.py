@@ -1,3 +1,6 @@
+# (C) Giannakopoulos, Theodoros - https://github.com/tyiannak/pyAudioAnalysis
+# This code got restructured so only the frequency-domain features get calculated
+
 import math
 import numpy as np
 from scipy.fftpack import fft
@@ -96,7 +99,7 @@ def spectral_rolloff(signal, c):
     energy = np.sum(signal ** 2)
     fft_length = len(signal)
     threshold = c * energy
-    # Ffind the spectral rolloff as the frequency position
+    # Find the spectral rolloff as the frequency position
     # where the respective spectral energy is equal to c*totalEnergy
     cumulative_sum = np.cumsum(signal ** 2) + eps
     a = np.nonzero(cumulative_sum > threshold)[0]
