@@ -31,8 +31,8 @@ MODELNAME = "rnn_full_mfcc_preemph_nonoise_5lstm_ws08_256_1"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
-# If we have a samplerate of 48000 Hz and a window size of 32 ms, we get 1536 samples in each window.
-# The next superior power would be 2048 so we choose that
+# If we have a samplerate of 48000 Hz and a window size of 800 ms, we get 38400 samples in each window.
+# The next superior power would be 65536 so we choose that
 NFFT = 65536
 
 # Size of the Window

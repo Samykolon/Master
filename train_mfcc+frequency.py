@@ -1,8 +1,10 @@
 # (C) Samuel Dressel 2020
-# Train a 5-LSTM-Layer RNN with a 8-Frequencydomain-Feature dataset
+# Train a 5-LSTM-Layer RNN with a 13-MFCC-Feature + 8-Frequencydomain-Feature dataset (21 Features total)
 
 import timespectralfeatures
 from pyAudioAnalysis import audioBasicIO
+from python_speech_features import mfcc
+from python_speech_features import logfbank
 import scipy.io.wavfile as wav
 from tqdm import tqdm
 
@@ -20,11 +22,20 @@ import matplotlib.pyplot as plt
 import itertools
 import io
 
+# Preemph-Filter to reduce noise
+PREEMPH = 0.0
+
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 200
+NUMBER_TESTSAMPLES = 100
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_frequency_nopreemph_nonoise_5lstm_ws08_256_1"
+MODELNAME = "rnn_eng_21features_nopreemph_nonoise_5lstm_ws08_256_5"
+
+# NFFT - This is the frequency resolution
+# By default, the FFT size is the first equal or superior power of 2 of the window size.
+# If we have a samplerate of 48000 Hz and a window size of 800 ms, we get 38400 samples in each window.
+# The next superior power would be 65536 so we choose that
+NFFT = 65536
 
 # Size of the Window
 WINDOW_SIZE = 0.8
@@ -53,6 +64,8 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
 #     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
 #     if "W" in aud:
 #         emotion = "W"
@@ -66,6 +79,8 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 #         emotion = "F"
 #     elif "T" in aud:
 #         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
 #     featurefile = "../../train_data/" + aud + "_" + emotion
 #     np.save(featurefile, F)
 #
@@ -76,6 +91,8 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
 #     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
 #     if "W" in aud:
 #         emotion = "W"
@@ -89,6 +106,8 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 #         emotion = "F"
 #     elif "T" in aud:
 #         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
 #     featurefile = "../../train_data/" + aud + "_" + emotion
 #     np.save(featurefile, F)
 #
@@ -99,6 +118,8 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
 #     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
 #     if "W" in aud:
 #         emotion = "W"
@@ -112,6 +133,8 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 #         emotion = "F"
 #     elif "T" in aud:
 #         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
 #     featurefile = "../../train_data/" + aud + "_" + emotion
 #     np.save(featurefile, F)
 
@@ -233,7 +256,6 @@ print("Generating tensors for training ...")
 for txtfile in tqdm(glob.glob("*.npy")):
 
     temp = np.load(txtfile)
-    temp = np.swapaxes(temp,0,1)
     data_train_data.append(temp)
 
     if "W" in txtfile:
@@ -262,7 +284,6 @@ print("Generating tensors for testing ...")
 for txtfile in tqdm(glob.glob("*.npy")):
 
     temp = np.load(txtfile)
-    temp = np.swapaxes(temp,0,1)
     data_test_data.append(temp)
 
     if "W" in txtfile:
@@ -307,7 +328,7 @@ valacc = 0.0
 print("Generating model ...")
 
 # RESNET7 Model
-# input1 = layers.Input(shape=(None, 8))
+# input1 = layers.Input(shape=(None, 21))
 # lstm1 = layers.LSTM(256, return_sequences=True)(input1)
 # lstm2 = layers.LSTM(256, return_sequences=True)(lstm1)
 # lstm3 = layers.LSTM(256, return_sequences=True)(lstm2)
@@ -322,11 +343,11 @@ print("Generating model ...")
 # model = Model(inputs=input1, outputs=dense2)
 
 model = tf.keras.Sequential()
-model.add(layers.LSTM((UNITS), input_shape=(None, 8), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 8), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 8), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 8), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 8)))
+model.add(layers.LSTM((UNITS), input_shape=(None, 21), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 21), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 21), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 21), return_sequences=True))
+model.add(layers.LSTM((UNITS), input_shape=(None, 21)))
 model.add(layers.Dropout(0.4))
 model.add(layers.Dense(UNITS, activation='relu'))
 model.add(layers.Dense(7, activation='softmax'))
