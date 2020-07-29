@@ -1,6 +1,6 @@
 Feature,Timeinseconds
 MFCC-NoPreemph,0.174
 MFCC-Preemph,0.175
-Frequency-Features,
+Frequency-Features,0.105
 MFCC+Frequency,
 MFCC+Frequency+Chroma,
