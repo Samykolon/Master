@@ -2,7 +2,7 @@
 # Train a 5-LSTM-Layer RNN with a 13-MFCC-Feature + 8-Frequencydomain-Feature +
 # 13-Chroma-Feature dataset (34 Features total)
 
-from pyAudioAnalysis import ShortTermFeatures
+import frequencyandchromafeatures
 from pyAudioAnalysis import audioBasicIO
 from python_speech_features import mfcc
 from python_speech_features import logfbank
@@ -30,7 +30,7 @@ PREEMPH = 0.0
 NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_34features_nopreemph_nonoise_5lstm_ws08_256_1"
+MODELNAME = "rnn_full_34features_nopreemph_nonoise_5lstm_ws08_256_retry"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -64,7 +64,9 @@ print("Generating features from own recordings ...")
 
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = ShortTermFeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs, deltas=False)
+    F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -79,6 +81,7 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     F = np.swapaxes(F, 0, 1)
+    F = np.append(F, mfcc_feat, axis=1)
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
@@ -88,7 +91,9 @@ print("Generating features from emoDB ...")
 
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = ShortTermFeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs, deltas=False)
+    F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -103,6 +108,7 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     F = np.swapaxes(F, 0, 1)
+    F = np.append(F, mfcc_feat, axis=1)
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
@@ -112,7 +118,9 @@ print("Generating features from zenodo-database...")
 
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = ShortTermFeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs, deltas=False)
+    F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    (rate,sig) = wav.read(aud)
+    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -127,6 +135,7 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     F = np.swapaxes(F, 0, 1)
+    F = np.append(F, mfcc_feat, axis=1)
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 

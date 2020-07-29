@@ -1,7 +1,7 @@
 # (C) Samuel Dressel 2020
 # Train a 5-LSTM-Layer RNN with a 13-MFCC-Feature + 8-Frequencydomain-Feature dataset (21 Features total)
 
-import timespectralfeatures
+import frequencyfeatures
 from pyAudioAnalysis import audioBasicIO
 from python_speech_features import mfcc
 from python_speech_features import logfbank
@@ -63,7 +63,7 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 #
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
-#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
 #     (rate,sig) = wav.read(aud)
 #     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
@@ -90,7 +90,7 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 #
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
-#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
 #     (rate,sig) = wav.read(aud)
 #     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
@@ -117,7 +117,7 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 #
 # for aud in tqdm(glob.glob("*.wav")):
 #     [Fs, x] = audioBasicIO.read_audio_file(aud)
-#     F, f_names = timespectralfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
 #     (rate,sig) = wav.read(aud)
 #     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
 #     emotion = "N"
