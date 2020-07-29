@@ -18,25 +18,25 @@ import itertools
 import io
 
 # Preemph-Filter to reduce noise
-PREEMPH = 0.0
+PREEMPH = 0.97
 
 # Number of Testsamples
 NUMBER_TESTSAMPLES = 200 # Number of Testsamples
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_mfcc_nopreemph_nonoise_5lstm_nfft131072_16_4"
+MODELNAME = "rnn_full_mfcc_preemph_nonoise_5lstm_ws08_256_1"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
 # If we have a samplerate of 48000 Hz and a window size of 32 ms, we get 1536 samples in each window.
 # The next superior power would be 2048 so we choose that
-NFFT = 131072
+NFFT = 65536
 
 # Size of the Window
-WINDOW_SIZE = 1.6
+WINDOW_SIZE = 0.8
 
 # Window step Size = Window-Duration/8 - Overlapping Parameter
-WINDOW_STEP = 0.2
+WINDOW_STEP = 0.1
 
 # Units for Training
 UNITS = 256
@@ -144,6 +144,7 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 # #         emotion = "T"
 # #     featurefile = "../../train_data/" + aud + "___" + emotion
 # #     np.save(featurefile, mfcc_feat)
+# #
 #
 # os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 #
@@ -191,6 +192,7 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 # #     featurefile = "../../train_data/" + aud + "___" + emotion
 # #     np.save(featurefile, mfcc_feat)
 
+# Clear test_data folder an move random files from the train_data folder in
 print("Chosing test samples ...")
 
 for filename in os.listdir(PATH_TESTDATA):
@@ -209,7 +211,8 @@ for x in range(NUMBER_TESTSAMPLES):
     dst = PATH_TESTDATA + random_file
     shutil.move(src,dst)
 
-print("Chosing two validation samples for each emotion ...")
+# Create folder inside the validation_data folder for this specific model and move four files for each emotion in
+print("Chosing four validation samples for each emotion ...")
 
 os.chdir(PATH_VALIDATIONDATA)
 
@@ -281,6 +284,7 @@ while c != 4:
         shutil.move(src,dest)
         c += 1
 
+# Initialising GPU by setting memory_growth to true
 print("Initialising GPU ...")
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
@@ -293,6 +297,7 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
+# Empty arrays for train and test data
 data_train_data = []
 ltr = []
 data_test_data = []
@@ -354,6 +359,8 @@ features_test = tf.convert_to_tensor(data_test_data)
 ltt = tf.convert_to_tensor(ltt)
 ltt = utils.to_categorical(ltt)
 
+# After generting the tensors, we can move the files from the validation_data folder
+# and from the test_data folder back so we can use them for a new session
 print("Tensors generated, moving testfiles back ...")
 
 files = os.listdir(PATH_TESTDATA)
@@ -371,8 +378,10 @@ except Exception as e:
 
 valacc = 0.0
 
+# Generating the model
 print("Generating model ...")
 
+# RESNET7 Model
 # input1 = layers.Input(shape=(None, 13))
 # lstm1 = layers.LSTM(256, return_sequences=True)(input1)
 # lstm2 = layers.LSTM(256, return_sequences=True)(lstm1)
@@ -402,6 +411,8 @@ rms = tf.keras.optimizers.RMSprop(learning_rate=0.001)
 model.compile(loss='categorical_crossentropy', optimizer=rms, metrics=['accuracy'])
 model.summary()
 
+# While fitting the model only the best weights get saved so we clear the weight-cache
+# from previous training
 print("Clearing weights folder ... ")
 
 for filename in os.listdir(PATH_WEIGHTS):
@@ -419,6 +430,7 @@ print("Training ...")
 os.chdir("/home/smu/Desktop/RNN")
 log_dir = "logs/" + MODELNAME
 
+# Next three functions are for generating the confusion matrix and store it as part of tensorboard
 def plot_to_image(figure):
   # Save the plot to a PNG in memory.
   buf = io.BytesIO()
@@ -477,10 +489,14 @@ def log_confusion_matrix(epoch, logs):
       with file_writer_cm.as_default():
           tf.summary.image("Confusion Matrix", cm_image, step=epoch)
 
+# First callback; generate confusion matrix while training
 cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=log_confusion_matrix)
 
-weights_dir = "temp/"
+# Second callback, generate tensorboard logs while training
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+# Third callback; save the best model-weights (best validation_accuracy)
+weights_dir = "temp/"
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=weights_dir,
     save_weights_only=True,
@@ -488,19 +504,12 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     mode='max',
     save_best_only=True)
 
-from tensorflow.keras.utils import plot_model
-plot_model(model, to_file='model.png')
-
 model.fit(features_train, ltr, epochs=50, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback, model_checkpoint_callback, cm_callback])
 
+# Load the temporarly saved best model weights and save the entire model with this weights
 model.load_weights(weights_dir)
 
 model_dir = 'models/' + MODELNAME
 model.save(model_dir)
 
 print("Model trained and saved!")
-
-# Eine Studie über Emotionserkennung mithilfe menschlicher Stimme mit rekurrenten neuronalen Netzen
-# A study on emotion recognition using human voice with Recurrent Neural Networks
-
-#10.1109/CVPR.2016.90 - Merge Layer

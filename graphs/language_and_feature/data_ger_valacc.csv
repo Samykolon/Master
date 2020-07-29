@@ -1,0 +1,6 @@
+Feature,#1,#2,#3,#4,#5,Maximum,Average
+MFCC-NoPreemph,71.0,71.0,64.0,74.0,69.0,74.0,
+MFCC-Preemph,70.0,69.0,70.0,72.0,69.0,72.0,
+Frequency-Features,
+MFCC+Frequency,
+MFCC+Frequency+Chroma,
