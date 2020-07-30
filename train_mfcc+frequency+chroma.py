@@ -27,10 +27,10 @@ import io
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 200
+NUMBER_TESTSAMPLES = 100
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_full_34features_nopreemph_nonoise_5lstm_ws08_256_retry"
+MODELNAME = "rnn_eng_34features_nopreemph_nonoise_5lstm_ws08_256_3"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -58,86 +58,86 @@ PATH_WEIGHTS = "/home/smu/Desktop/RNN/temp/"
 # class_names
 CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral']
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
-
-print("Generating features from own recordings ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    F = np.swapaxes(F, 0, 1)
-    F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, F)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
-
-print("Generating features from emoDB ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    F = np.swapaxes(F, 0, 1)
-    F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, F)
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
-
-print("Generating features from zenodo-database...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    F = np.swapaxes(F, 0, 1)
-    F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, F)
+# os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
+#
+# print("Generating features from own recordings ...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     [Fs, x] = audioBasicIO.read_audio_file(aud)
+#     F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, F)
+#
+# os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
+#
+# print("Generating features from emoDB ...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     [Fs, x] = audioBasicIO.read_audio_file(aud)
+#     F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, F)
+#
+# os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
+#
+# print("Generating features from zenodo-database...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     [Fs, x] = audioBasicIO.read_audio_file(aud)
+#     F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     F = np.swapaxes(F, 0, 1)
+#     F = np.append(F, mfcc_feat, axis=1)
+#     featurefile = "../../train_data/" + aud + "_" + emotion
+#     np.save(featurefile, F)
 
 # Clear test_data folder an move random files from the train_data folder in
 print("Chosing test samples ...")
