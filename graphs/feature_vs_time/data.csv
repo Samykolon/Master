@@ -4,3 +4,4 @@ MFCC-Preemph,0.175
 Frequency-Features,0.105
 MFCC+Frequency,0.277
 MFCC+Frequency+Chroma,0.454
+MFCC+PLP,0.333
