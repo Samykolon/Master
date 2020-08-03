@@ -8,12 +8,6 @@ Samplerate is given from the audio source
 ### Window-Size
 WINDOW_SIZE = 0.8 s
 
-https://arxiv.org/pdf/1701.08071.pdf - Emotion Recognition From Speech With RecurrentNeural Networks
-
-30 milliseconds roughly correspond to the duration of one phoneme in the normal flow of spoken English.
-200 milliseconds is the approximate duration of one word.
-Experiments do not show significant difference in terms of quality.  But computation time rises with the reduction in frameduration due to bigger number of frames.
-
 ### NFFT
 NFFT = 65536
 
@@ -34,16 +28,28 @@ A Study on the Impact of Input Features, Signal Length, and Acted Speech we can 
 
 ### Model-Structure
 
-After testing, we found out that a 5-LSTM produces the best results (average 72.3 % validation accuracy):
+After testing, we found out that a LSTM-RESNET produces the best results (average 77 % validation accuracy):
 
 ```python
-model = tf.keras.Sequential()
-model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-model.add(layers.LSTM((UNITS), input_shape=(None, 13)))
-model.add(layers.Dropout(0.4))
-model.add(layers.Dense(UNITS, activation='relu'))
-model.add(layers.Dense(7, activation='softmax'))
+input1 = layers.Input(shape=(None, 13))
+lstm1 = layers.LSTM(UNITS, return_sequences=True)(input1)
+lstm2 = layers.LSTM(UNITS, return_sequences=True)(lstm1)
+merge1 = layers.Concatenate(axis=2)([input1,lstm2])
+merge2 = layers.Concatenate(axis=2)([input1,merge1])
+lstm3 = layers.LSTM(UNITS, return_sequences=True)(merge2)
+lstm4 = layers.LSTM(UNITS, return_sequences=True)(lstm3)
+merge3 = layers.Concatenate(axis=2)([merge1,lstm4])
+merge4 = layers.Concatenate(axis=2)([input1,merge3])
+lstm5 = layers.LSTM(UNITS, return_sequences=True)(merge4)
+lstm6 = layers.LSTM(UNITS, return_sequences=True)(lstm5)
+merge5 = layers.Concatenate(axis=2)([merge3,lstm6])
+merge6 = layers.Concatenate(axis=2)([input1,merge5])
+lstm7 = layers.LSTM(UNITS, return_sequences=True)(merge6)
+lstm8 = layers.LSTM(UNITS, return_sequences=True)(lstm7)
+merge7 = layers.Concatenate(axis=2)([merge5,lstm8])
+merge8 = layers.Concatenate(axis=2)([input1,merge7])
+lstm9 = layers.LSTM(UNITS)(merge8)
+dropout1 = layers.Dropout(0.4)(lstm9)
+dense1 = layers.Dense(7, activation='softmax')(dropout1)
+model = Model(inputs=input1, outputs=dense1)
 ```

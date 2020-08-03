@@ -11,7 +11,7 @@ y=[]
 
 os.chdir("/home/smu/Desktop/RNN/graphs/lstm_vs_valacc")
 
-with open('lstm_vs_valacc_256.csv', 'r') as csvfile:
+with open('lstm_vs_valacc.csv', 'r') as csvfile:
     plots = csv.reader(csvfile, delimiter=',')
     next(plots, None)
     for row in plots:
@@ -20,24 +20,21 @@ with open('lstm_vs_valacc_256.csv', 'r') as csvfile:
 
 y_pos = np.arange(len(x))
 
-plt.ylim(50,80)
+fig, ax = plt.subplots()
+
+plt.xlim(40,85)
 # Create bars
-plt.bar(y_pos, y)
+plt.barh(y_pos, y)
 
 # Create names on the x-axis
-plt.xticks(y_pos, x)
+plt.yticks(y_pos, x)
 
-for a,b in zip(y_pos,y):
-
-    plt.annotate(b, # this is the text
-                 (a,b), # this is the point to label
-                 textcoords="offset points", # how to position the text
-                 xytext=(0,10), # distance from text to points (x,y)
-                 ha='center') # horizontal alignment can be left, right or center
+for i, v in enumerate(y):
+    ax.text(v + 1.5, i-0.1, str(v))
 
 plt.title('Model-Structure and Validation-Accuracy (50 epochs)')
-plt.xlabel('Model-Structure',labelpad=10)
-plt.ylabel('Validation-Accuracy',labelpad=10)
+plt.xlabel('Validation-Accuracy',labelpad=10)
+plt.ylabel('Model-Structure',labelpad=10)
 plt.tight_layout()
 
 # Show graphic
