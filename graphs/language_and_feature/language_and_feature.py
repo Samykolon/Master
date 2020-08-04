@@ -32,26 +32,18 @@ with open('data_eng_valacc.csv', 'r') as csvfile:
 
 y_pos = np.arange(len(x))
 
-plt.ylim(25,85)
+plt.xlim(25,85)
 # Create bars
-fig1 = plt.bar(y_pos, y, width=0.25)
-fig2 = plt.bar(y_pos+0.25, k, width=0.25)
-fig3 = plt.bar(y_pos+0.5, l, width=0.25)
+fig1 = plt.barh(y_pos, y, height=0.25)
+fig2 = plt.barh(y_pos+0.25, k, height=0.25)
+fig3 = plt.barh(y_pos+0.5, l, height=0.25)
 
 # Create names on the x-axis
-plt.xticks(y_pos+0.25, x)
-
-# for a,b in zip(y_pos,y):
-#
-#     plt.annotate(b, # this is the text
-#                  (a,b), # this is the point to label
-#                  textcoords="offset points", # how to position the text
-#                  xytext=(0,10), # distance from text to points (x,y)
-#                  ha='center') # horizontal alignment can be left, right or center
+plt.yticks(y_pos+0.25, x)
 
 plt.title('Features and Validation-Accuracy (50 epochs)')
-plt.xlabel('Features',labelpad=10)
-plt.ylabel('Validation-Accuracy',labelpad=10)
+plt.xlabel('Validation-Accuracy',labelpad=10)
+plt.ylabel('Features',labelpad=10)
 plt.legend(('Both', 'Ger', 'Eng'))
 plt.tight_layout()
 

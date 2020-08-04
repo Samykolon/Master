@@ -9,9 +9,9 @@ plt.rcParams.update({'font.size': 14})
 x=[]
 y=[]
 
-os.chdir("/home/smu/Desktop/RNN/graphs/lstm_vs_valacc")
+os.chdir("/home/smu/Desktop/RNN/graphs/model_vs_valacc")
 
-with open('lstm_vs_valacc.csv', 'r') as csvfile:
+with open('model_vs_valacc.csv', 'r') as csvfile:
     plots = csv.reader(csvfile, delimiter=',')
     next(plots, None)
     for row in plots:

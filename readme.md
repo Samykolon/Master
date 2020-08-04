@@ -53,3 +53,10 @@ dropout1 = layers.Dropout(0.4)(lstm9)
 dense1 = layers.Dense(7, activation='softmax')(dropout1)
 model = Model(inputs=input1, outputs=dense1)
 ```
+
+# Related Work
+
+### Audiovisual emotion recognition in wild
+
+In their paper "Audiovisual emotion recognition in wild" Egils Avots, Tomasz Sapi, Maie Bachmann and Dorota Kami used 13 MFCC Features with a 0.4 s Window-Size and a 0.2 Step-Size.
+Using this values as parameters resulted in a average `10 % validation accuracy loss` compared to a stepsize of 0.1 s and a window-size of 0.8 s.
