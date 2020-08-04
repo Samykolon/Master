@@ -1,8 +1,8 @@
 Feature,#1,#2,#3,#4,#5,Maximum,Average
-MFCC-NoPreemph,75.0,72.0,74.0,78.0,69.0,78.0,73.6
-MFCC-Preemph,79.0,75.0,77.0,74.0,77.0,79.0,76.4
-Frequency,43.0,24.0,21.0,38.0,42.0,43.0,33.6
-MFCC+Frequency,68.0,72.0,75.0,77.0,76.0,77.0,73.6
-MFCC+Frequency+Chroma,73.0,76.0,82.0,74.0,76.0,82.0,76.2
-MFCC+PLP,65.0,73.0,67.0,71.0,73.0,73.0,69.8
-MFCC-40Ceps,76.0,73.0,71.0,73.0,76.0,76.0,73.8
+MFCC-NoPreemph,74.0,78.0,86.0,77.0,81.0,86.0,79.2
+MFCC-Preemph,78.0,82.0,77.0,80.0,84.0,84.0,80.2
+MFCC-40Ceps,
+Frequency,
+MFCC+Frequency,
+MFCC+Frequency+Chroma,
+MFCC+Chroma,

@@ -21,13 +21,13 @@ import itertools
 import io
 
 # Preemph-Filter to reduce noise
-PREEMPH = 0.0
+PREEMPH = 0.97
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 200
+NUMBER_TESTSAMPLES = 100
 
 # Name of the model (for saving and logs)
-MODELNAME = "rnn_mfcc_test"
+PREMODELNAME = "rnn_eng_mfcc_preemph_nonoise_resnet_ws08_512_"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -42,9 +42,12 @@ WINDOW_SIZE = 0.8
 WINDOW_STEP = 0.1
 
 # Units for Training
-UNITS = 256
+UNITS = 512
 
+# Number of MFCCs
 NUMCEP = 13
+
+# Number of Melfilters
 NUMFILT = 26
 
 # Path where the train-data is stored
@@ -200,7 +203,9 @@ CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral
 
 cc = 1
 
-while cc < 5:
+while cc < 6:
+
+    MODELNAME = PREMODELNAME + str(cc)
 
     # Clear test_data folder an move random files from the train_data folder in
     print("Chosing test samples ...")
@@ -528,9 +533,9 @@ while cc < 5:
         save_best_only=True)
 
 
-    from tensorflow.keras.utils import plot_model
-    plot_model(model, to_file='/home/smu/Desktop/RNN/model.png')
-    plot_model(model, to_file='/home/smu/Desktop/RNN/modelshape.png', show_shapes=True)
+    # from tensorflow.keras.utils import plot_model
+    # plot_model(model, to_file='/home/smu/Desktop/RNN/model.png')
+    # plot_model(model, to_file='/home/smu/Desktop/RNN/modelshape.png', show_shapes=True)
 
 
     model.fit(features_train, ltr, epochs=50, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback, model_checkpoint_callback, cm_callback])
