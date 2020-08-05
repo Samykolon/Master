@@ -24,7 +24,7 @@ import io
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 100
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
 PREMODELNAME = "rnn_full_40mfcc_preemph_nonoise_resnet_ws08_512_"

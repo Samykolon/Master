@@ -1,5 +1,5 @@
 # (C) Samuel Dressel 2020
-# Train a 5-LSTM-Layer RNN with a 8-Frequencydomain-Feature dataset
+# Train a 9-LSTM-RESNET with a 8-Time-Spectral-Feature dataset
 
 import frequencyfeatures
 from pyAudioAnalysis import audioBasicIO
@@ -21,7 +21,7 @@ import itertools
 import io
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 200
+NUMBER_TESTSAMPLES = 100
 
 # Name of the model (for saving and logs)
 PREMODELNAME = "rnn_full_time+spec_nopreemph_nonoise_resnet_ws08_512_"
@@ -313,7 +313,7 @@ while cc < 6:
     print("Generating model ...")
 
     # RESNET
-    input1 = layers.Input(shape=(None, 40))
+    input1 = layers.Input(shape=(None, 8))
     lstm1 = layers.LSTM(UNITS, return_sequences=True)(input1)
     lstm2 = layers.LSTM(UNITS, return_sequences=True)(lstm1)
     merge1 = layers.Concatenate(axis=2)([input1,lstm2])
