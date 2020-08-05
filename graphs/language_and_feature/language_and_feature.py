@@ -32,7 +32,7 @@ with open('data_eng_valacc.csv', 'r') as csvfile:
 
 y_pos = np.arange(len(x))
 
-plt.xlim(25,85)
+plt.xlim(20,85)
 # Create bars
 fig1 = plt.barh(y_pos, y, height=0.25)
 fig2 = plt.barh(y_pos+0.25, k, height=0.25)
