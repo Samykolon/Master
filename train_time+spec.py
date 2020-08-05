@@ -1,8 +1,8 @@
 # (C) Samuel Dressel 2020
-# Train a 9LSTM-RESNET with a 40-MFCC-Feature dataset
+# Train a 5-LSTM-Layer RNN with a 8-Frequencydomain-Feature dataset
 
-from python_speech_features import mfcc
-from python_speech_features import logfbank
+import frequencyfeatures
+from pyAudioAnalysis import audioBasicIO
 import scipy.io.wavfile as wav
 from tqdm import tqdm
 
@@ -20,20 +20,11 @@ import matplotlib.pyplot as plt
 import itertools
 import io
 
-# Preemph-Filter to reduce noise
-PREEMPH = 0.0
-
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 100
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_40mfcc_preemph_nonoise_resnet_ws08_512_"
-
-# NFFT - This is the frequency resolution
-# By default, the FFT size is the first equal or superior power of 2 of the window size.
-# If we have a samplerate of 48000 Hz and a window size of 800 ms, we get 38400 samples in each window.
-# The next superior power would be 65536 so we choose that
-NFFT = 65536
+PREMODELNAME = "rnn_full_time+spec_nopreemph_nonoise_resnet_ws08_512_"
 
 # Size of the Window
 WINDOW_SIZE = 0.8
@@ -43,12 +34,6 @@ WINDOW_STEP = 0.1
 
 # Units for Training
 UNITS = 512
-
-# Number of MFCCs
-NUMCEP = 40
-
-# Number of Melfilters
-NUMFILT = 40
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -66,8 +51,8 @@ os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 print("Generating features from own recordings ...")
 
 for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, numcep=NUMCEP, nfilt=NUMFILT, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+    [Fs, x] = audioBasicIO.read_audio_file(aud)
+    F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -82,39 +67,15 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, mfcc_feat)
-
-# os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
-#
-# print("Generating features from own recordings with noise ...")
-#
-# for aud in tqdm(glob.glob("*.wav")):
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-#     emotion = "N"
-#     if "W" in aud:
-#         emotion = "W"
-#     elif "L" in aud:
-#         emotion = "L"
-#     elif "E" in aud:
-#         emotion = "E"
-#     elif "A" in aud:
-#         emotion = "A"
-#     elif "F" in aud:
-#         emotion = "F"
-#     elif "T" in aud:
-#         emotion = "T"
-#     featurefile = "../../train_data/" + aud + "___" + emotion
-#     np.save(featurefile, mfcc_feat)
-
+    np.save(featurefile, F)
 
 os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
 print("Generating features from emoDB ...")
 
 for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, numcep=NUMCEP, nfilt=NUMFILT, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+    [Fs, x] = audioBasicIO.read_audio_file(aud)
+    F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -129,39 +90,15 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, mfcc_feat)
-
-# os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
-#
-# print("Generating features from emoDB with noise ...")
-#
-# for aud in tqdm(glob.glob("*.wav")):
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-#     emotion = "N"
-#     if "W" in aud:
-#         emotion = "W"
-#     elif "L" in aud:
-#         emotion = "L"
-#     elif "E" in aud:
-#         emotion = "E"
-#     elif "A" in aud:
-#         emotion = "A"
-#     elif "F" in aud:
-#         emotion = "F"
-#     elif "T" mixednoisein aud:
-#         emotion = "T"
-#     featurefile = "../../train_data/" + aud + "___" + emotion
-#     np.save(featurefile, mfcc_feat)
-#
+    np.save(featurefile, F)
 
 os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 
 print("Generating features from zenodo-database...")
 
 for aud in tqdm(glob.glob("*.wav")):
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, numcep=NUMCEP, nfilt=NUMFILT, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+    [Fs, x] = audioBasicIO.read_audio_file(aud)
+    F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
     emotion = "N"
     if "W" in aud:
         emotion = "W"
@@ -176,30 +113,7 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     featurefile = "../../train_data/" + aud + "_" + emotion
-    np.save(featurefile, mfcc_feat)
-
-# os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
-#
-# print("Generating features from zenodo-database with noise...")
-#
-# for aud in tqdm(glob.glob("*.wav")):
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-#     emotion = "N"
-#     if "W" in aud:
-#         emotion = "W"
-#     elif "L" in aud:
-#         emotion = "L"
-#     elif "E" in aud:
-#         emotion = "E"
-#     elif "A" in aud:
-#         emotion = "A"
-#     elif "F" in aud:
-#         emotion = "F"
-#     elif "T" in aud:
-#         emotion = "T"
-#     featurefile = "../../train_data/" + aud + "___" + emotion
-#     np.save(featurefile, mfcc_feat)
+    np.save(featurefile, F)
 
 cc = 1
 
@@ -325,6 +239,7 @@ while cc < 6:
     for txtfile in tqdm(glob.glob("*.npy")):
 
         temp = np.load(txtfile)
+        temp = np.swapaxes(temp,0,1)
         data_train_data.append(temp)
 
         if "W" in txtfile:
@@ -353,6 +268,7 @@ while cc < 6:
     for txtfile in tqdm(glob.glob("*.npy")):
 
         temp = np.load(txtfile)
+        temp = np.swapaxes(temp,0,1)
         data_test_data.append(temp)
 
         if "W" in txtfile:
@@ -418,21 +334,6 @@ while cc < 6:
     dropout1 = layers.Dropout(0.4)(lstm9)
     dense1 = layers.Dense(7, activation='softmax')(dropout1)
     model = Model(inputs=input1, outputs=dense1)
-
-    # 9x LSTM-RNN
-    # model = tf.keras.Sequential()
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13), return_sequences=True))
-    # model.add(layers.LSTM((UNITS), input_shape=(None, 13)))
-    # model.add(layers.Dropout(0.4))
-    # model.add(layers.Dense(UNITS, activation='relu'))
-    # model.add(layers.Dense(7, activation='softmax'))
 
     rms = tf.keras.optimizers.RMSprop(learning_rate=0.001)
 
@@ -531,12 +432,6 @@ while cc < 6:
         monitor='val_accuracy',
         mode='max',
         save_best_only=True)
-
-
-    # from tensorflow.keras.utils import plot_model
-    # plot_model(model, to_file='/home/smu/Desktop/RNN/model.png')
-    # plot_model(model, to_file='/home/smu/Desktop/RNN/modelshape.png', show_shapes=True)
-
 
     model.fit(features_train, ltr, epochs=50, batch_size=128, validation_data=(features_test, ltt), callbacks=[tensorboard_callback, model_checkpoint_callback, cm_callback])
 
