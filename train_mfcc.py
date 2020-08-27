@@ -27,7 +27,7 @@ PREEMPH = 0.0
 NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_40mfcc_preemph_nonoise_resnet_ws08_512_"
+PREMODELNAME = "rnn_full_40mfcc_nopreemph_nonoise_resnet_ws08_512_"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.

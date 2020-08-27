@@ -15,7 +15,7 @@ RATE = 48000
 CHUNK = 1000
 RECORD_SECONDS = 240
 WAVE_OUTPUT_FILENAME = "/home/smu/Desktop/RNN/TEST.wav"
-INPUT_DEVICE = "AT2020 USB: Audio (hw:1,0)" # Name of the input device
+INPUT_DEVICE = "AT2020 USB: Audio (hw:3,0)" # Name of the input device
 
 def match_target_amplitude(sound, target_dBFS):
     change_in_dBFS = target_dBFS - sound.dBFS

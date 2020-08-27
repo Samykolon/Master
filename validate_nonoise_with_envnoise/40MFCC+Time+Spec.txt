@@ -1,0 +1,25 @@
+0 = Wut, 1 = Langeweile, 2 = Ekel, 3 = Angst, 4 = Freude, 5 = Trauer, 6 = Neutral
+
+              precision    recall  f1-score   support
+
+           0       0.58      1.00      0.74         7
+           1       0.71      0.62      0.67         8
+           2       0.57      0.50      0.53         8
+           3       0.50      0.50      0.50         8
+           4       0.33      0.38      0.35         8
+           5       0.33      0.11      0.17         9
+           6       0.70      0.88      0.78         8
+
+    accuracy                           0.55        56
+   macro avg       0.53      0.57      0.53        56
+weighted avg       0.53      0.55      0.52        56
+
+Language of the dataset: German + English
+Used Features: MFCC + Time- and Spectraldomain (48 Features)
+Preemph-Filter: False
+Noise: False
+Model: 9xLSTM-RESNET
+NFFT-Size: 65536
+Window-Size: 0.8
+Window-Step: 0.1
+Validation Accuracy: 55.36 %

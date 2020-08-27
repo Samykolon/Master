@@ -13,10 +13,8 @@ from tensorflow.python.client import device_lib
 import matplotlib.pyplot as plt
 from python_speech_features import mfcc
 from python_speech_features import logfbank
-import timespectralfeatures
 from pyAudioAnalysis import audioBasicIO
 import scipy.io.wavfile as wav
-
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
@@ -28,7 +26,7 @@ if gpus:
     except RuntimeError as e:
         print(e)
 
-model = tf.keras.models.load_model('models/rnn_full_21features_nopreemph_nonoise_3lstm')
+model = tf.keras.models.load_model('models/rnn_ger_40mfcc_nopreemph_nonoise_resnet_ws08_512')
 model.summary()
 
 plt.ion()
@@ -37,21 +35,33 @@ class DynamicUpdate():
     # X RANGE
     min_x = 0.0
     max_x = 1.0
+
     # Samplerate of the input
     SAMPLERATE = 48000
     # NFFT - This is the frequency resolution
     # By default, the FFT size is the first equal or superior power of 2 of the window size.
-    # If we have a samplerate of 16000 Hz and a window size of 32 ms, we get 512 samples in each window.
-    # The next superior power would be 512 so we choose that
-    NFFT = 2048
-    # Format to read in audio data
-    FORMAT = pyaudio.paInt16
+    # If we have a samplerate of 48000 Hz and a window size of 800 ms, we get 38400 samples in each window.
+    # The next superior power would be 65536 so we choose that
+    NFFT = 65536
+
     # Size of the Window
-    WINDOW_SIZE = 0.032
+    WINDOW_SIZE = 0.8
+
     # Window step Size = Window-Duration/8 - Overlapping Parameter
-    WINDOW_STEP = 0.004
+    WINDOW_STEP = 0.1
+
+    # Units for Training
+    UNITS = 512
+
+    # Number of MFCCs
+    NUMCEP = 40
+
+    # Number of Melfilters
+    NUMFILT = 40
+
     # Preemph-Filter to reduce noise
     PREEMPH = 0.0
+
     # Record Seconds
     RECORD_SECONDS = 6
 
@@ -67,8 +77,6 @@ class DynamicUpdate():
         self.varn = 0.0
         self.model = model
 
-
-
     def on_launch(self, xdata, ydata):
         self.figure, self.ax = plt.subplots()
         self.figure.canvas.set_window_title('Emotion Recognition')
@@ -78,11 +86,7 @@ class DynamicUpdate():
         if path.exists(self.WAVE_INPUT_FILENAME):
             self.ax.cla()
             (rate,sig) = wav.read(self.WAVE_INPUT_FILENAME)
-            mfcc_feat = mfcc(sig, rate, winlen=self.WINDOW_SIZE, winstep=self.WINDOW_STEP, nfft=self.NFFT, preemph=self.PREEMPH)
-            [Fs, x] = audioBasicIO.read_audio_file(self.WAVE_INPUT_FILENAME)
-            F, f_names = timespectralfeatures.feature_extraction(x, Fs, self.WINDOW_SIZE*Fs, self.WINDOW_STEP*Fs)
-            F = np.swapaxes(F, 0, 1)
-            F = np.append(F, mfcc_feat, axis=1)
+            mfcc_feat = mfcc(sig, rate, numcep=self.NUMCEP, nfilt=self.NUMFILT, winlen=self.WINDOW_SIZE, winstep=self.WINDOW_STEP, nfft=self.NFFT, preemph=self.PREEMPH)
             predict_test = tf.convert_to_tensor(mfcc_feat)
             predict_test = tf.expand_dims(predict_test, 0)
             result = model.predict(predict_test)

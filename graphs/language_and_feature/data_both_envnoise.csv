@@ -1,0 +1,8 @@
+Feature,#1,#2,#3,#4,#5,Minimum,Maximum,Average
+MFCC-NoPreemph,
+MFCC-Preemph,
+MFCC-40Ceps,56.0,54.0,52.0,54.0,58.0,52.0,58.0,54.8
+Time+Spectral,
+MFCC+Time+Spectral,
+MFCC+Chroma,
+MFCC+Chroma+TS,
