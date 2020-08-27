@@ -26,7 +26,7 @@ import io
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 100
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
 PREMODELNAME = "rnn_eng_mfcc+chroma+time+spec_nopreemph_nonoise_resnet_ws08_512_"
@@ -63,7 +63,7 @@ PATH_WEIGHTS = "/home/smu/Desktop/RNN/temp/"
 # class_names
 CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral']
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
 
 print("Generating features from own recordings ...")
 
@@ -90,7 +90,7 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
 
 print("Generating features from emoDB ...")
 
@@ -117,7 +117,7 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
 
 print("Generating features from zenodo-database...")
 
