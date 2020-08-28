@@ -21,13 +21,13 @@ import itertools
 import io
 
 # Preemph-Filter to reduce noise
-PREEMPH = 0.0
+PREEMPH = 0.97
 
 # Number of Testsamples
 NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_40mfcc_nopreemph_nonoise_resnet_ws08_512_"
+PREMODELNAME = "rnn_full_mfcc_preemph_envnoise_resnet_ws08_512_"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -45,10 +45,10 @@ WINDOW_STEP = 0.1
 UNITS = 512
 
 # Number of MFCCs
-NUMCEP = 40
+NUMCEP = 13
 
 # Number of Melfilters
-NUMFILT = 40
+NUMFILT = 26
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -61,7 +61,7 @@ PATH_WEIGHTS = "/home/smu/Desktop/RNN/temp/"
 # class_names
 CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral']
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
 
 print("Generating features from own recordings ...")
 
@@ -84,31 +84,7 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, mfcc_feat)
 
-# os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
-#
-# print("Generating features from own recordings with noise ...")
-#
-# for aud in tqdm(glob.glob("*.wav")):
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-#     emotion = "N"
-#     if "W" in aud:
-#         emotion = "W"
-#     elif "L" in aud:
-#         emotion = "L"
-#     elif "E" in aud:
-#         emotion = "E"
-#     elif "A" in aud:
-#         emotion = "A"
-#     elif "F" in aud:
-#         emotion = "F"
-#     elif "T" in aud:
-#         emotion = "T"
-#     featurefile = "../../train_data/" + aud + "___" + emotion
-#     np.save(featurefile, mfcc_feat)
-
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
 
 print("Generating features from emoDB ...")
 
@@ -131,31 +107,7 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, mfcc_feat)
 
-# os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
-#
-# print("Generating features from emoDB with noise ...")
-#
-# for aud in tqdm(glob.glob("*.wav")):
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-#     emotion = "N"
-#     if "W" in aud:
-#         emotion = "W"
-#     elif "L" in aud:
-#         emotion = "L"
-#     elif "E" in aud:
-#         emotion = "E"
-#     elif "A" in aud:
-#         emotion = "A"
-#     elif "F" in aud:
-#         emotion = "F"
-#     elif "T" mixednoisein aud:
-#         emotion = "T"
-#     featurefile = "../../train_data/" + aud + "___" + emotion
-#     np.save(featurefile, mfcc_feat)
-#
-
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
+os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
 
 print("Generating features from zenodo-database...")
 
@@ -177,29 +129,6 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "T"
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, mfcc_feat)
-
-# os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
-#
-# print("Generating features from zenodo-database with noise...")
-#
-# for aud in tqdm(glob.glob("*.wav")):
-#     (rate,sig) = wav.read(aud)
-#     mfcc_feat = mfcc(sig, rate, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-#     emotion = "N"
-#     if "W" in aud:
-#         emotion = "W"
-#     elif "L" in aud:
-#         emotion = "L"
-#     elif "E" in aud:
-#         emotion = "E"
-#     elif "A" in aud:
-#         emotion = "A"
-#     elif "F" in aud:
-#         emotion = "F"
-#     elif "T" in aud:
-#         emotion = "T"
-#     featurefile = "../../train_data/" + aud + "___" + emotion
-#     np.save(featurefile, mfcc_feat)
 
 cc = 1
 
@@ -397,7 +326,7 @@ while cc < 6:
     print("Generating model ...")
 
     # RESNET
-    input1 = layers.Input(shape=(None, 40))
+    input1 = layers.Input(shape=(None, 13))
     lstm1 = layers.LSTM(UNITS, return_sequences=True)(input1)
     lstm2 = layers.LSTM(UNITS, return_sequences=True)(lstm1)
     merge1 = layers.Concatenate(axis=2)([input1,lstm2])
