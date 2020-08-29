@@ -21,10 +21,10 @@ import itertools
 import io
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 100
+NUMBER_TESTSAMPLES = 400
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_time+spec_nopreemph_envnoise_resnet_ws08_512_"
+PREMODELNAME = "rnn_full_time+spec_nopreemph_mixednoise_resnet_ws08_512_"
 
 # Size of the Window
 WINDOW_SIZE = 0.8
@@ -46,7 +46,7 @@ PATH_WEIGHTS = "/home/smu/Desktop/RNN/temp/"
 # class_names
 CLASSNAMES = ['Wut', 'Langeweile', 'Ekel', 'Angst', 'Freude', 'Trauer', 'Neutral']
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
+os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds")
 
 print("Generating features from own recordings ...")
 
@@ -69,7 +69,30 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
+os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
+
+print("Generating features from own recordings with noise ...")
+
+for aud in tqdm(glob.glob("*.wav")):
+    [Fs, x] = audioBasicIO.read_audio_file(aud)
+    F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    emotion = "N"
+    if "W" in aud:
+        emotion = "W"
+    elif "L" in aud:
+        emotion = "L"
+    elif "E" in aud:
+        emotion = "E"
+    elif "A" in aud:
+        emotion = "A"
+    elif "F" in aud:
+        emotion = "F"
+    elif "T" in aud:
+        emotion = "T"
+    featurefile = "../../train_data/" + aud + "___" + emotion
+    np.save(featurefile, F)
+
+os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds")
 
 print("Generating features from emoDB ...")
 
@@ -92,7 +115,30 @@ for aud in tqdm(glob.glob("*.wav")):
     featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
-os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
+os.chdir("/home/smu/Desktop/RNN/audiodata/emo_sixseconds_envnoise")
+
+print("Generating features from emoDB with noise ...")
+
+for aud in tqdm(glob.glob("*.wav")):
+    [Fs, x] = audioBasicIO.read_audio_file(aud)
+    F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    emotion = "N"
+    if "W" in aud:
+        emotion = "W"
+    elif "L" in aud:
+        emotion = "L"
+    elif "E" in aud:
+        emotion = "E"
+    elif "A" in aud:
+        emotion = "A"
+    elif "F" in aud:
+        emotion = "F"
+    elif "T" in aud:
+        emotion = "T"
+    featurefile = "../../train_data/" + aud + "___" + emotion
+    np.save(featurefile, F)
+
+os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds")
 
 print("Generating features from zenodo-database...")
 
@@ -113,6 +159,29 @@ for aud in tqdm(glob.glob("*.wav")):
     elif "T" in aud:
         emotion = "T"
     featurefile = "../../train_data/" + aud + "_" + emotion
+    np.save(featurefile, F)
+
+os.chdir("/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise")
+
+print("Generating features from zenodo-database with noise ...")
+
+for aud in tqdm(glob.glob("*.wav")):
+    [Fs, x] = audioBasicIO.read_audio_file(aud)
+    F, f_names = frequencyfeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    emotion = "N"
+    if "W" in aud:
+        emotion = "W"
+    elif "L" in aud:
+        emotion = "L"
+    elif "E" in aud:
+        emotion = "E"
+    elif "A" in aud:
+        emotion = "A"
+    elif "F" in aud:
+        emotion = "F"
+    elif "T" in aud:
+        emotion = "T"
+    featurefile = "../../train_data/" + aud + "___" + emotion
     np.save(featurefile, F)
 
 cc = 1
