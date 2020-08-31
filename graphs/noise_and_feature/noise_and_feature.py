@@ -64,7 +64,7 @@ plt.yticks(y_pos+0.25, x)
 plt.title('Noise and Validation-Accuracy (50 epochs)')
 plt.xlabel('Validation-Accuracy',labelpad=10)
 plt.ylabel('Features',labelpad=10)
-plt.legend(('No Noise', 'Enviromental Noise', 'No Noise and Env. Noise mixed'))
+plt.legend(('No noise', 'Enviromental noise', 'No Noise and env. noise mixed'))
 plt.tight_layout()
 
 # Show graphic
