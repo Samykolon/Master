@@ -70,6 +70,7 @@ print("Generating features from own recordings ...")
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
     F, f_names = chromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
+    print(F)
     (rate,sig) = wav.read(aud)
     mfcc_feat = mfcc(sig, rate, numcep=NUMCEP, nfilt=NUMFILT, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"
