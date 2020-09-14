@@ -21,13 +21,13 @@ import itertools
 import io
 
 # Preemph-Filter to reduce noise
-PREEMPH = 0.0
+PREEMPH = 0.97
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 400
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_40mfcc_nopreemph_mixednoise_resnet_ws08_512_"
+PREMODELNAME = "rnn_full_mfcc_preemph_mixednoise2000_resnet_ws08_512_"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -45,10 +45,10 @@ WINDOW_STEP = 0.1
 UNITS = 512
 
 # Number of MFCCs
-NUMCEP = 40
+NUMCEP = 13
 
 # Number of Melfilters
-NUMFILT = 40
+NUMFILT = 26
 
 # Path where the train-data is stored
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/train_data/"
@@ -395,7 +395,7 @@ while cc < 6:
     print("Generating model ...")
 
     # RESNET
-    input1 = layers.Input(shape=(None, 40))
+    input1 = layers.Input(shape=(None, 13))
     lstm1 = layers.LSTM(UNITS, return_sequences=True)(input1)
     lstm2 = layers.LSTM(UNITS, return_sequences=True)(lstm1)
     merge1 = layers.Concatenate(axis=2)([input1,lstm2])

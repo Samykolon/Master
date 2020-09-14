@@ -97,10 +97,8 @@ def feature_extraction(signal, sampling_rate, window, step):
 
         chroma_names, chroma_feature_matrix = \
             chroma_features(fft_magnitude, sampling_rate, num_fft)
-        chroma_features_end = 0 + \
-                              n_chroma_feats - 1
-        feature_vector[0:chroma_features_end] = \
-            chroma_feature_matrix
+        chroma_features_end = 0 + n_chroma_feats - 1
+        feature_vector[0:chroma_features_end] = chroma_feature_matrix
         feature_vector[chroma_features_end] = chroma_feature_matrix.std()
 
         features.append(feature_vector)

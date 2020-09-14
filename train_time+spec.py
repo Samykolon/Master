@@ -21,7 +21,7 @@ import itertools
 import io
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 400
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
 PREMODELNAME = "rnn_full_time+spec_nopreemph_mixednoise_resnet_ws08_512_"

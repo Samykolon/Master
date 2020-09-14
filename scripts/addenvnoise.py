@@ -7,8 +7,8 @@ import os
 import glob, shutil, sys, random
 
 PATH_ENVNOISE = "/home/smu/Desktop/RNN/audiodata/envnoise_sixseconds/"
-PATH_OUTPUT = "/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds_envnoise/"
-PATH_INPUT = "/home/smu/Desktop/RNN/audiodata/zenodo_sixseconds"
+PATH_OUTPUT = "/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise/"
+PATH_INPUT = "/home/smu/Desktop/RNN/audiodata/own_sixseconds"
 
 # Function to normalize set the overlay gain of the noise
 def set_to_target_level(sound, target_level):

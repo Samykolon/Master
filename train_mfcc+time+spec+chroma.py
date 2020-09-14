@@ -26,10 +26,10 @@ import io
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 400
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_mfcc+chroma+time+spec_nopreemph_mixednoise_resnet_ws08_512_"
+PREMODELNAME = "rnn_full_mfcc+chroma+time+spec_nopreemph_mixednoise2000_resnet_ws08_512_"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.

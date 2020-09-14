@@ -26,10 +26,10 @@ import io
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 400
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_mfcc+chroma_nopreemph_mixednoise_resnet_ws08_512_"
+PREMODELNAME = "rnn_full_mfcc+chroma_nopreemph_mixednoise2000_resnet_ws08_512_"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -70,7 +70,6 @@ print("Generating features from own recordings ...")
 for aud in tqdm(glob.glob("*.wav")):
     [Fs, x] = audioBasicIO.read_audio_file(aud)
     F, f_names = chromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    print(F)
     (rate,sig) = wav.read(aud)
     mfcc_feat = mfcc(sig, rate, numcep=NUMCEP, nfilt=NUMFILT, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
     emotion = "N"

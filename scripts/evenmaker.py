@@ -25,20 +25,20 @@ def match_target_amplitude(sound, target_dBFS):
     change_in_dBFS = target_dBFS - sound.dBFS
     return sound.apply_gain(change_in_dBFS)
 
-os.chdir(PATH_EMO)
-
-for aud in glob.glob("*.wav"):
-    sound = AudioSegment.from_file(aud)
-    sound = sound.set_frame_rate(OUTRATE)
-    sound = sound.set_channels(OUTCHANNELS)
-    silence = AudioSegment.silent(duration=0.1)  #duration in milliseconds
-    silence.set_frame_rate(OUTRATE)
-    silence.set_channels(OUTCHANNELS)
-    sound += silence
-    sound += silence
-    sound = match_target_amplitude(sound, -40.0)
-    filepath = PATH_EMO_NEW + aud
-    sound.export(filepath, format="wav")
+# os.chdir(PATH_EMO)
+#
+# for aud in glob.glob("*.wav"):
+#     sound = AudioSegment.from_file(aud)
+#     sound = sound.set_frame_rate(OUTRATE)
+#     sound = sound.set_channels(OUTCHANNELS)
+#     silence = AudioSegment.silent(duration=0.1)  #duration in milliseconds
+#     silence.set_frame_rate(OUTRATE)
+#     silence.set_channels(OUTCHANNELS)
+#     sound += silence
+#     sound += silence
+#     sound = match_target_amplitude(sound, -40.0)
+#     filepath = PATH_EMO_NEW + aud
+#     sound.export(filepath, format="wav")
 
 # os.chdir(PATH_EMO_NEW)
 #
@@ -68,15 +68,15 @@ for aud in glob.glob("*.wav"):
 #     print('Subtype: {}'.format(ob.subtype))
 #     print('Frames: {}'.format(ob.frames))
 
-os.chdir(PATH_ZENODO)
-
-for aud in glob.glob("*.wav"):
-    sound = AudioSegment.from_file(aud)
-    sound = sound.set_frame_rate(OUTRATE)
-    sound = sound.set_channels(OUTCHANNELS)
-    sound = match_target_amplitude(sound, -40.0)
-    filepath = PATH_ZENODO_NEW + aud
-    sound.export(filepath, format="wav")
+# os.chdir(PATH_ZENODO)
+#
+# for aud in glob.glob("*.wav"):
+#     sound = AudioSegment.from_file(aud)
+#     sound = sound.set_frame_rate(OUTRATE)
+#     sound = sound.set_channels(OUTCHANNELS)
+#     sound = match_target_amplitude(sound, -40.0)
+#     filepath = PATH_ZENODO_NEW + aud
+#     sound.export(filepath, format="wav")
 
 # os.chdir(PATH_ZENODO_NEW)
 #
@@ -87,25 +87,25 @@ for aud in glob.glob("*.wav"):
 #     print('Subtype: {}'.format(ob.subtype))
 #     print('Frames: {}'.format(ob.frames))
 
-os.chdir(PATH_ENV)
-
-for aud in glob.glob("*.wav"):
-    sound = AudioSegment.from_file(aud)
-    sound = sound.set_frame_rate(OUTRATE)
-    sound = sound.set_channels(OUTCHANNELS)
-    silence = AudioSegment.silent(duration=0.1)  #duration in milliseconds
-    silence.set_frame_rate(OUTRATE)
-    silence.set_channels(OUTCHANNELS)
-    sound += silence
-    sound += silence
-    sound += silence
-    silence = AudioSegment.silent(duration=833.4)  #duration in milliseconds
-    silence.set_frame_rate(OUTRATE)
-    silence.set_channels(OUTCHANNELS)
-    sound += silence
-    sound = match_target_amplitude(sound, -40.0)
-    filepath = PATH_ENV_NEW + aud
-    sound.export(filepath, format="wav")
+# os.chdir(PATH_ENV)
+#
+# for aud in glob.glob("*.wav"):
+#     sound = AudioSegment.from_file(aud)
+#     sound = sound.set_frame_rate(OUTRATE)
+#     sound = sound.set_channels(OUTCHANNELS)
+#     silence = AudioSegment.silent(duration=0.1)  #duration in milliseconds
+#     silence.set_frame_rate(OUTRATE)
+#     silence.set_channels(OUTCHANNELS)
+#     sound += silence
+#     sound += silence
+#     sound += silence
+#     silence = AudioSegment.silent(duration=833.4)  #duration in milliseconds
+#     silence.set_frame_rate(OUTRATE)
+#     silence.set_channels(OUTCHANNELS)
+#     sound += silence
+#     sound = match_target_amplitude(sound, -40.0)
+#     filepath = PATH_ENV_NEW + aud
+#     sound.export(filepath, format="wav")
 
 # os.chdir(PATH_ENV_NEW)
 #

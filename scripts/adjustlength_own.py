@@ -6,7 +6,7 @@ from pydub.utils import make_chunks
 import os
 import glob, shutil, sys, random
 
-os.chdir("/home/smu/Desktop/RNN/own")
+os.chdir("/home/smu/Desktop/RNN/audiodata/0_srcfiles/own")
 
 print("Making each sample 6 seconds long")
 
@@ -16,7 +16,7 @@ for aud in glob.glob("*.wav"):
     chunks = make_chunks(myaudio, chunk_length_ms) #Make chunks of one sec
     for i, chunk in enumerate(chunks):
         c_name = "_{0}.wav".format(i)
-        filepath = "/home/smu/Desktop/RNN/own_sixseconds/" + aud
+        filepath = "/home/smu/Desktop/RNN/audiodata/own_sixseconds/" + aud
         chunk_name = filepath + c_name
         chunk.export(chunk_name, format="wav")
 

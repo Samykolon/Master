@@ -26,10 +26,10 @@ import io
 PREEMPH = 0.0
 
 # Number of Testsamples
-NUMBER_TESTSAMPLES = 400
+NUMBER_TESTSAMPLES = 200
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_mfcc+time+spec_nopreemph_mixednoise_resnet_ws08_512_"
+PREMODELNAME = "rnn_full_mfcc+time+spec_nopreemph_mixednoise2000_resnet_ws08_512_"
 
 # NFFT - This is the frequency resolution
 # By default, the FFT size is the first equal or superior power of 2 of the window size.
@@ -87,7 +87,7 @@ for aud in tqdm(glob.glob("*.wav")):
         emotion = "T"
     F = np.swapaxes(F, 0, 1)
     F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../../train_data/" + aud + "___" + emotion
+    featurefile = "../../train_data/" + aud + "_" + emotion
     np.save(featurefile, F)
 
 os.chdir("/home/smu/Desktop/RNN/audiodata/own_sixseconds_envnoise")
