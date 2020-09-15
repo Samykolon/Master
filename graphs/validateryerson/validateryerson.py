@@ -13,7 +13,7 @@ l=[]
 
 m=[]
 
-os.chdir("/home/smu/Desktop/RNN/graphs/validatecaer")
+os.chdir("/home/smu/Desktop/RNN/graphs/validateryerson")
 
 with open('nonoise.csv', 'r') as csvfile:
     plots = csv.reader(csvfile, delimiter=',')
@@ -45,7 +45,7 @@ with open('mixednoise2000.csv', 'r') as csvfile:
 
 y_pos = np.arange(len(x))
 
-plt.xlim(0,35)
+plt.xlim(10,60)
 plt.ylim()
 # Create bars
 fig1 = plt.barh(y_pos, l, height=0.20, label='Mixed noise (4000 samples)')
@@ -57,7 +57,7 @@ fig3 = plt.barh(y_pos+0.60, y, height=0.20, label='No noise')
 plt.yticks(y_pos+0.3, x)
 
 
-plt.title('Validation-Accuracy from validating 35 samples of the CAER-Dataset')
+plt.title('Validation-Accuracy from validating 204 samples of the Ryerson-Dataset')
 plt.xlabel('Validation-Accuracy',labelpad=10)
 plt.ylabel('Features',labelpad=10)
 plt.legend()

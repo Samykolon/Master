@@ -1,7 +1,8 @@
-Feature,Timeinseconds
-MFCC-NoPreemph,0.174
-MFCC-Preemph,0.175
-Frequency-Features,0.105
-MFCC+Frequency,0.277
-MFCC+Frequency+Chroma,0.454
-MFCC+PLP,0.333
+Feature,Time in ms
+MFCC+Chroma+TS,602.0
+MFCC+Chroma,555.0
+MFCC+Time+Spectral,546.0
+Time+Spectral,109.0
+MFCC-40Ceps,166.0
+MFCC-NoPreemph,163.0
+MFCC-Preemph,168.0

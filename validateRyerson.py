@@ -59,40 +59,36 @@ if gpus:
         print(e)
 
 # Paths
-PATH_SOURCE = "/home/smu/Desktop/RNN/audiodata/ValidationSET_CAER/"
+PATH_SOURCE = "/home/smu/Desktop/RNN/audiodata/ValidationSET_RYERSON/"
 PATH_TRAINDATA = "/home/smu/Desktop/RNN/audiodata/cache/"
 PATH_MODELS = "/home/smu/Desktop/RNN/models/"
-PATH_VALIDATE = "/home/smu/Desktop/RNN/validate_caer/"
+PATH_VALIDATE = "/home/smu/Desktop/RNN/validate_ryerson/"
 
 # Name of the model (for saving and logs)
-PREMODELNAME = "rnn_full_mfcc+chroma+time+spec_nopreemph_mixednoise_resnet_ws08_512"
+PREMODELNAME = "rnn_full_40mfcc_nopreemph_nonoise_resnet_ws08_512"
 
-os.chdir(PATH_SOURCE)
-
-print("Generating features from validationsamples ...")
-
-for aud in tqdm(glob.glob("*.wav")):
-    [Fs, x] = audioBasicIO.read_audio_file(aud)
-    F, f_names = frequencyandchromafeatures.feature_extraction(x, Fs, WINDOW_SIZE*Fs, WINDOW_STEP*Fs)
-    (rate,sig) = wav.read(aud)
-    mfcc_feat = mfcc(sig, rate, numcep=NUMCEP, nfilt=NUMFILT, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
-    emotion = "N"
-    if "W" in aud:
-        emotion = "W"
-    elif "L" in aud:
-        emotion = "L"
-    elif "E" in aud:
-        emotion = "E"
-    elif "A" in aud:
-        emotion = "A"
-    elif "F" in aud:
-        emotion = "F"
-    elif "T" in aud:
-        emotion = "T"
-    F = np.swapaxes(F, 0, 1)
-    F = np.append(F, mfcc_feat, axis=1)
-    featurefile = "../cache/" + aud + "_" + emotion
-    np.save(featurefile, F)
+# os.chdir(PATH_SOURCE)
+#
+# print("Generating features from validationsamples ...")
+#
+# for aud in tqdm(glob.glob("*.wav")):
+#     (rate,sig) = wav.read(aud)
+#     mfcc_feat = mfcc(sig, rate, numcep=NUMCEP, nfilt=NUMFILT, winlen=WINDOW_SIZE, winstep=WINDOW_STEP, nfft=NFFT, preemph=PREEMPH)
+#     emotion = "N"
+#     if "W" in aud:
+#         emotion = "W"
+#     elif "L" in aud:
+#         emotion = "L"
+#     elif "E" in aud:
+#         emotion = "E"
+#     elif "A" in aud:
+#         emotion = "A"
+#     elif "F" in aud:
+#         emotion = "F"
+#     elif "T" in aud:
+#         emotion = "T"
+#     featurefile = "../cache/" + aud + "_" + emotion
+#     np.save(featurefile, mfcc_feat)
 
 names = "0 = Wut, 1 = Langeweile, 2 = Ekel, 3 = Angst, 4 = Freude, 5 = Trauer, 6 = Neutral"
 
@@ -205,7 +201,7 @@ o_windowsize = "Window-Size: " + o_windowsize + "\n"
 o_windowstep = "Window-Step: " + o_windowstep + "\n"
 o_valacc = "Validation Accuracy: " + str(o_valacc) + " %\n"
 
-f = open("/home/smu/Desktop/RNN/validate_caer/" + "MFCC+Chroma+TS_MixedNoise4000" + ".txt", "w")
+f = open(PATH_VALIDATE + "40MFCC_NoNoise_VAL" + ".txt", "w")
 f.write(names)
 f.write("\n\n")
 f.write(o_classes)
