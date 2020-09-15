@@ -1,0 +1,8 @@
+Feature,Validation-Accuracy
+MFCC+Chroma+TS,17.14
+MFCC+Chroma,11.43
+MFCC+Time+Spectral,14.29
+Time+Spectral,5.71
+MFCC-40Ceps,25.71
+MFCC-NoPreemph,11.43
+MFCC-Preemph,20.0
