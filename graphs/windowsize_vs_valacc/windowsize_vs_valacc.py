@@ -1,11 +1,26 @@
 import matplotlib.pyplot as plt
 from matplotlib.legend_handler import HandlerLine2D
+
+
 import glob, os
 import csv
 import numpy as np
 from scipy.interpolate import interp1d
 
-plt.rcParams.update({'font.size': 14})
+fig_size = plt.rcParams["figure.figsize"]
+fig_size[0] = 6
+fig_size[1] = 3
+
+#plt.use("pgf")
+plt.rcParams.update({
+    "pgf.texsystem": "pdflatex",
+    'font.family': 'serif',
+    'text.usetex': True,
+    'pgf.rcfonts': False,
+    'figure.figsize': fig_size,
+
+})
+
 
 x=[]
 y=[]
@@ -22,18 +37,15 @@ with open('windowsize_vs_valacc.csv', 'r') as csvfile:
 plt.ylim(50,80)
 # plt.plot(x, y, marker='o')
 
-f2 = interp1d(x, y, kind='cubic', fill_value="extrapolate")
+f2 = interp1d(x, y, kind='cubic', fill_value="extrapolate", )
 xnew = np.linspace(0.0, 1.6, num=41, endpoint=True)
-plt.plot(x, y, 'o', xnew, f2(xnew), '--')
+plt.plot(x, y, 'o', xnew, f2(xnew), '--', color='#3268a8', markersize=10)
 
-plt.legend(['data', 'cubic'], loc='best')
-
-plt.title('Window-Size and Validation-Accuracy (50 epochs)')
-plt.xlabel('Window-Size',labelpad=10)
-plt.ylabel('Validation-Accuracy',labelpad=10)
+plt.xlabel('Fenstergröße',labelpad=10)
+plt.ylabel('Validations-Genauigkeit',labelpad=10)
 plt.tight_layout()
 
 # Show graphic
-plt.show()
+plt.savefig('windowsize_vs_valacc.pgf')
 
 # 56.7364 + 37.7661 x - 31.2855 x^2 + 7.53548 x^3

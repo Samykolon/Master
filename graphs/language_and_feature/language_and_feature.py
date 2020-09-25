@@ -4,6 +4,20 @@ import glob, os
 import csv
 import numpy as np
 
+fig_size = plt.rcParams["figure.figsize"]
+fig_size[0] = 6
+fig_size[1] = 5
+
+#plt.use("pgf")
+plt.rcParams.update({
+    "pgf.texsystem": "pdflatex",
+    'font.family': 'serif',
+    'text.usetex': True,
+    'pgf.rcfonts': False,
+    'figure.figsize': fig_size,
+
+})
+
 x=[]
 y=[]
 ymin=[]
@@ -54,18 +68,19 @@ y_pos = np.arange(len(x))
 
 plt.xlim(18,90)
 # Create bars
-fig1 = plt.barh(y_pos, y, xerr=yerror, height=0.25)
-fig2 = plt.barh(y_pos+0.25, k, xerr=kerror, height=0.25)
-fig3 = plt.barh(y_pos+0.5, l, xerr=lerror, height=0.25)
+fig1 = plt.barh(y_pos, y, xerr=yerror, height=0.25, label='Deutsch + Englisch')
+fig2 = plt.barh(y_pos+0.25, k, xerr=kerror, height=0.25, label='Deutsch')
+fig3 = plt.barh(y_pos+0.5, l, xerr=lerror, height=0.25, label='Englisch')
 
 # Create names on the x-axis
 plt.yticks(y_pos+0.25, x)
 
-plt.title('Features and Validation-Accuracy (50 epochs)')
-plt.xlabel('Validation-Accuracy',labelpad=10)
-plt.ylabel('Features',labelpad=10)
-plt.legend(('Both', 'Ger', 'Eng'))
+plt.xlabel('Validations-Genauigkeit',labelpad=10)
+
+ax = plt.gca()
+handles, labels = ax.get_legend_handles_labels()
+ax.legend(handles[::-1], labels[::-1])
 plt.tight_layout()
 
 # Show graphic
-plt.show()
+plt.savefig('language_and_feature.pgf')

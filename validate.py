@@ -1,7 +1,6 @@
-# Validate trained models with input overlayed by random noises
+# (C) Samuel Dressel 2020
 
-# Imports for feature extraction
-import scipy.io.wavfile as wav
+# Validate trained models with input overlayed by random noises
 from tqdm import tqdm
 
 import glob, os, shutil, sys, random
@@ -29,11 +28,11 @@ if gpus:
         print(e)
 
 
-PREMODELNAME = "rnn_full_time+spec_nopreemph_mixednoise_resnet_ws08_512"
+PREMODELNAME = "rnn_full_40mfcc_nopreemph_nonoise_resnet_ws08_512"
 
-PATH_TRAINDATA = "/home/smu/Desktop/RNN/validation_data/" + PREMODELNAME + "/"
+PATH_TRAINDATA = "/home/smu/Desktop/RNN/validation_data/" + "rnn_full_40mfcc_nopreemph_mixednoise2000_resnet_ws08_512" + "/"
 PATH_MODELS = "/home/smu/Desktop/RNN/models/"
-PATH_VALIDATE = "/home/smu/Desktop/RNN/validate_trained/"
+PATH_VALIDATE = "/home/smu/Desktop/RNN/validate_mixed/"
 
 names = "0 = Wut, 1 = Langeweile, 2 = Ekel, 3 = Angst, 4 = Freude, 5 = Trauer, 6 = Neutral"
 
@@ -46,7 +45,6 @@ os.chdir(PATH_TRAINDATA)
 
 for npyfile in tqdm(glob.glob("*.npy")):
     temp = np.load(npyfile)
-    temp = np.swapaxes(temp,0,1)
     data_test_data.append(temp)
 
     if "W" in npyfile:
@@ -147,7 +145,7 @@ o_windowsize = "Window-Size: " + o_windowsize + "\n"
 o_windowstep = "Window-Step: " + o_windowstep + "\n"
 o_valacc = "Validation Accuracy: " + str(o_valacc) + " %\n"
 
-f = open(PATH_VALIDATE + "TS_MixedNoise4000" + ".txt", "w")
+f = open(PATH_VALIDATE + "40MFCC_NoNoise" + ".txt", "w")
 f.write(names)
 f.write("\n\n")
 f.write(o_classes)

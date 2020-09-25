@@ -4,7 +4,19 @@ import glob, os
 import csv
 import numpy as np
 
-plt.rcParams.update({'font.size': 14})
+fig_size = plt.rcParams["figure.figsize"]
+fig_size[0] = 6
+fig_size[1] = 4
+
+#plt.use("pgf")
+plt.rcParams.update({
+    "pgf.texsystem": "pdflatex",
+    'font.family': 'serif',
+    'text.usetex': True,
+    'pgf.rcfonts': False,
+    'figure.figsize': fig_size,
+
+})
 
 x=[]
 y=[]
@@ -36,11 +48,10 @@ fig2 = plt.bar(y_pos+0.25, k, width=0.25)
 # Create names on the x-axis
 plt.xticks(y_pos+0.125, x)
 
-plt.title('Layer-Output-Size and Validation-Accuracy (50 epochs)')
-plt.xlabel('Layer-Output-Size',labelpad=10)
-plt.ylabel('Validation-Accuracy',labelpad=10)
+plt.xlabel('Anzahl der LSTM-Zellen pro Schicht',labelpad=10)
+plt.ylabel('Validationsgenauigkeit',labelpad=10)
 plt.legend(('5LSTM', 'RESNET'))
 plt.tight_layout()
 
 # Show graphic
-plt.show()
+plt.savefig('units_vs_valacc.pgf')

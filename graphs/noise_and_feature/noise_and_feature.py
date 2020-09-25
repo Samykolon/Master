@@ -4,6 +4,20 @@ import glob, os
 import csv
 import numpy as np
 
+fig_size = plt.rcParams["figure.figsize"]
+fig_size[0] = 6
+fig_size[1] = 6
+
+#plt.use("pgf")
+plt.rcParams.update({
+    "pgf.texsystem": "pdflatex",
+    'font.family': 'serif',
+    'text.usetex': True,
+    'pgf.rcfonts': False,
+    'figure.figsize': fig_size,
+
+})
+
 x=[]
 y=[]
 ymin=[]
@@ -78,9 +92,7 @@ fig3 = plt.barh(y_pos+0.60, y, xerr=yerror, height=0.20, label='No noise')
 plt.yticks(y_pos+0.3, x)
 
 
-plt.title('Noise and Validation-Accuracy (50 epochs)')
-plt.xlabel('Validation-Accuracy',labelpad=10)
-plt.ylabel('Features',labelpad=10)
+plt.xlabel('Validationsgenauigkeit',labelpad=10)
 plt.legend()
 # plt.legend(('Mixed noise (4000 samples)', 'Mixed noise (2000 samples)', 'Enviromental noise', 'No noise'))
 
@@ -90,4 +102,4 @@ handles, labels = ax.get_legend_handles_labels()
 ax.legend(handles[::-1], labels[::-1])
 plt.tight_layout()
 # Show graphic
-plt.show()
+plt.savefig('noise_and_feature.pgf')

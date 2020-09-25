@@ -1,8 +1,8 @@
 Feature,Time in ms
-MFCC+Chroma+TS,602.0
-MFCC+Chroma,555.0
-MFCC+Time+Spectral,546.0
-Time+Spectral,109.0
-MFCC-40Ceps,166.0
-MFCC-NoPreemph,163.0
-MFCC-Preemph,168.0
+40MFCC+Chroma+TS,602.0
+40MFCC+Chroma,555.0
+40MFCC+TS,546.0
+TS,109.0
+40MFCC,166.0
+13MFCC,163.0
+13MFCC-Preemph,168.0

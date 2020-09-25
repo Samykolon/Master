@@ -1,3 +1,6 @@
+# (C) Samuel Dressel 2020
+# Script to convert AVI to WAV
+
 from moviepy.editor import *
 import os
 import glob, shutil, sys, random

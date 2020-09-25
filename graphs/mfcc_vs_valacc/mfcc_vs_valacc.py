@@ -4,7 +4,19 @@ import glob, os
 import csv
 import numpy as np
 
-plt.rcParams.update({'font.size': 14})
+fig_size = plt.rcParams["figure.figsize"]
+fig_size[0] = 6
+fig_size[1] = 3
+
+#plt.use("pgf")
+plt.rcParams.update({
+    "pgf.texsystem": "pdflatex",
+    'font.family': 'serif',
+    'text.usetex': True,
+    'pgf.rcfonts': False,
+    'figure.figsize': fig_size,
+
+})
 
 x=[]
 y=[]
@@ -35,10 +47,9 @@ for a,b in zip(y_pos,y):
                  xytext=(0,10), # distance from text to points (x,y)
                  ha='center') # horizontal alignment can be left, right or center
 
-plt.title('Number of MFCCs and Validation-Accuracy (50 epochs)')
-plt.xlabel('Number of MFCCs',labelpad=10)
-plt.ylabel('Validation-Accuracy',labelpad=10)
+plt.xlabel('Anzahl der Mel-Frequenz-Cepstrum-Koeffizienten',labelpad=10)
+plt.ylabel('Validations-Genauigkeit',labelpad=10)
 plt.tight_layout()
 
 # Show graphic
-plt.show()
+plt.savefig('mfcc_vs_valacc.pgf')

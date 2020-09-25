@@ -1,3 +1,6 @@
+# (C) Samuel Dressel 2020
+# When TX-Server is running, handle request and response
+
 import pyaudio
 import wave
 import time

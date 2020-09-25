@@ -1,3 +1,4 @@
+# (C) Samuel Dressel 2020
 # Validate trained models with input overlayed by random noises
 
 # Imports for feature extraction
