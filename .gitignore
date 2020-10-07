@@ -19,3 +19,5 @@ __pycache__/
 npy_data/
 temp/
 cache/
+validate_caer/
+validate_trained/
